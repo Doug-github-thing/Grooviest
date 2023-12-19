@@ -7,6 +7,16 @@
   <version>1.0-SNAPSHOT</version>
   <name>myproject</name>
   <url>http://maven.apache.org</url>
+
+  <!-- https://github.com/lavalink-devs/lavaplayer#readme
+        LavaPlayer for playing audio -->
+  <repositories>
+    <repository>
+      <id>jitpack</id>
+      <url>https://jitpack.io</url>
+    </repository>
+  </repositories>
+
   <dependencies>
 
     <!-- junit for unit testing -->
@@ -20,16 +30,24 @@
     <!-- https://mvnrepository.com/artifact/net.dv8tion/JDA
           Java Discord API -->
     <dependency>
-        <groupId>net.dv8tion</groupId>
-        <artifactId>JDA</artifactId>
-        <version>5.0.0-beta.18</version>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>5.0.0-beta.18</version>
+    </dependency>
+
+    <!-- https://github.com/lavalink-devs/lavaplayer#readme
+          LavaPlayer for playing audio -->
+    <dependency>
+      <groupId>dev.arbjerg</groupId>
+      <artifactId>lavaplayer</artifactId>
+      <version>2.0.4</version>
     </dependency>
 
     <!-- Spark for HTTP routes -->
     <dependency>
-        <groupId>com.sparkjava</groupId>
-        <artifactId>spark-core</artifactId>
-        <version>2.9.3</version>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-core</artifactId>
+      <version>2.9.3</version>
     </dependency>
 
   </dependencies>
@@ -42,11 +60,11 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.1</version>
         <executions>
-            <execution>
-                <goals>
-                    <goal>java</goal>
-                </goals>
-            </execution>
+          <execution>
+            <goals>
+              <goal>java</goal>
+            </goals>
+          </execution>
         </executions>
         <configuration>
             <!-- Specify the main class to be executed -->
