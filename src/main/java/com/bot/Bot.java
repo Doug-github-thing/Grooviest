@@ -66,9 +66,6 @@ public class Bot extends ListenerAdapter {
             case "leave":
                 leave();
                 break;
-            case "play":
-                play();
-                break;
             default:
                 break;
         }
@@ -85,8 +82,8 @@ public class Bot extends ListenerAdapter {
         audioManager.closeAudioConnection();
     }
 
-    public void play() {
-        System.out.println("I was told to play audio!");
+    public void playFile(String filename) {
+        System.out.println("I am supposed to try to play the file: " + filename);
     }
 
 }
