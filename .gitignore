@@ -11,6 +11,7 @@ node_modules
 .firebase
 firebase-debug.log*
 firebase-debug.*.log*
+/grooviest-web/deploy.sh 
 
 # Distribution / packaging
 .Python
