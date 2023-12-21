@@ -8,7 +8,7 @@ export default class API {
      * @param command name of the command, ie "leave" or "join"
      */
     static sendCommand = (command) => {
-        const resource = `http://${process.env.REACT_APP_BOT_ADDRESS}:25566/bot_api/${command}`;
+        const resource = `https://${process.env.REACT_APP_BOT_ADDRESS}:25566/bot_api/${command}`;
         console.log(resource);
         
         fetch(resource, {
