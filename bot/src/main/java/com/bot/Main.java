@@ -1,7 +1,5 @@
 package com.bot;
 
-import com.bot.Bot;
-
 public class Main {
     public static void main(String[] args) {
 

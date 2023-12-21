@@ -1,6 +1,5 @@
 package com.bot;
 
-import com.bot.Bot;
 import static spark.Spark.*;
 import spark.Filter;
 
