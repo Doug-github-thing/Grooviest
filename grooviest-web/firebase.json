@@ -15,8 +15,5 @@
         "destination": "/index.html"
       }
     ]
-  },
-  "emulators": {
-    "singleProjectMode": true
   }
 }
