@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+# Firebase web app
+node_modules
+.firebase
+firebase-debug.log*
+firebase-debug.*.log*
+
 # Distribution / packaging
 .Python
 build/
