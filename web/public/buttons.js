@@ -1,4 +1,4 @@
-const bot_url = "http://" + env("BOT_ADDRESS") + ":4567"
+const bot_url = "http://" + process.env.BOT_ADDRESS + ":25566"
 
 const sendCommand = (content) => {
     // console.log(`Sending POST at ${bot_url}/bot_api/${content}`);
