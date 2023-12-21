@@ -1,7 +1,7 @@
-const bot_url = "http://127.0.0.1:4567"
+const bot_url = "http://" + env("BOT_ADDRESS") + ":4567"
 
 const sendCommand = (content) => {
-    console.log(`Sending POST at ${bot_url}/bot_api/${content}`);
+    // console.log(`Sending POST at ${bot_url}/bot_api/${content}`);
 
     fetch(`${bot_url}/bot_api/${content}`, {
         method: "POST"
