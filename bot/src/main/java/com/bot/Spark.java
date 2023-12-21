@@ -2,12 +2,18 @@ package com.bot;
 
 import com.bot.Bot;
 import static spark.Spark.*;
+import spark.Filter;
 
 public class Spark {
 
     public static void setupRoutes(Bot bot) {
         // Set up Spark
-        port(4567); // Set the port for your Spark server
+        port(25566); // Set the port for your Spark server
+
+        after((Filter) (request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Methods", "GET");
+        });
 
         // For basic single line commands
         post("/bot_api/:param", (req, res) -> {
