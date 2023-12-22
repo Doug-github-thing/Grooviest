@@ -13,6 +13,8 @@ firebase-debug.log*
 firebase-debug.*.log*
 /grooviest-web/deploy.sh 
 
+KeyStore.jks 
+
 # Distribution / packaging
 .Python
 build/

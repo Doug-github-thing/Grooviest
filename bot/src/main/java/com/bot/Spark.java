@@ -3,12 +3,28 @@ package com.bot;
 import static spark.Spark.*;
 import spark.Filter;
 
+import static spark.Spark.*;
+
 public class Spark {
 
-    public static void setupRoutes(Bot bot) {
-        // Set up Spark
-        port(25566); // Set the port for your Spark server
+    /**
+     * Sets up the project's Java Spark web server.
+     * 
+     * @param bot              An object encapsulating Bot behavior and state.
+     * @param keystorePassword Password for the locally saved KeyStore used for SSL.
+     */
+    public static void setupRoutes(Bot bot, String keystorePassword) {
 
+        final int port = 25566;
+
+        // Set up Spark
+        port(port);
+
+        // Import local SSL keystore to allow HTTPS communication from the web
+        // Requires KeyStore.jks to be in the root directory
+        secure("KeyStore.jks", keystorePassword, null, null);
+
+        // Allow through CORS for development
         after((Filter) (request, response) -> {
             response.header("Access-Control-Allow-Origin", "*");
             response.header("Access-Control-Allow-Methods", "GET");
