@@ -3,8 +3,6 @@ package com.bot;
 import static spark.Spark.*;
 import spark.Filter;
 
-import static spark.Spark.*;
-
 public class Spark {
 
     /**
@@ -22,12 +20,17 @@ public class Spark {
 
         // Import local SSL keystore to allow HTTPS communication from the web
         // Requires KeyStore.jks to be in the root directory
-        secure("KeyStore.jks", keystorePassword, null, null);
+        // secure("KeyStore.jks", keystorePassword, null, null);
 
         // Allow through CORS for development
-        after((Filter) (request, response) -> {
-            response.header("Access-Control-Allow-Origin", "*");
-            response.header("Access-Control-Allow-Methods", "GET");
+        // after((Filter) (request, response) -> {
+        // response.header("Access-Control-Allow-Origin", "*");
+        // response.header("Access-Control-Allow-Methods", "GET");
+        // });
+
+        // Get "/" to make sure it's running
+        get("/", (req, res) -> {
+            return "Hello World";
         });
 
         // For basic single line commands
