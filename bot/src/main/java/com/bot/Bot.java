@@ -28,20 +28,17 @@ public class Bot extends ListenerAdapter {
                 .build();
     }
 
+    // Callback when a message is received
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 
-        if (event.getAuthor().isBot())
-            return;
-        if (!event.getMessage().getContentRaw().startsWith("-"))
-            return;
-        if (!event.isFromGuild())
+        // Filter message to make sure it's a real command
+        if (event.getAuthor().isBot()
+                || !event.isFromGuild()
+                || !event.getMessage().getContentRaw().startsWith("-"))
             return;
 
-        if (event.getMessage().getContentRaw().equalsIgnoreCase("-egg")) {
-            event.getChannel().sendMessage("emngmgg").queue();
-        }
-
+        // "join" route
         if (event.getMessage().getContentRaw().equalsIgnoreCase("-join")) {
             myGuild = event.getGuild();
 
@@ -55,8 +52,19 @@ public class Bot extends ListenerAdapter {
 
             audioManager.openAudioConnection(audioChannel);
         }
+
+        // "egg" route
+        if (event.getMessage().getContentRaw().equalsIgnoreCase("-egg")) {
+            event.getChannel().sendMessage("emngmgg").queue();
+        }
     }
 
+    /**
+     * Reads a command coming from a web request pointed at the bot's server
+     * address. Passes this on to the appropriate designated method.
+     * 
+     * @param str The name of the command, ie "join", "leave"
+     */
     public void parseWebCommand(String str) {
         if (myGuild == null) {
             System.out.println("Use '-join' command to connect me to a voice channel");
@@ -75,16 +83,27 @@ public class Bot extends ListenerAdapter {
         }
     }
 
+    /**
+     * Bot attempts to join the currently selected audio channel.
+     */
     public void join() {
         System.out.println("Attempting to join the channel");
         audioManager.openAudioConnection(audioChannel);
     }
 
+    /**
+     * Bot attempts to disconnect from the current audio channel.
+     */
     public void leave() {
         System.out.println("Attempting to leave the channel");
         audioManager.closeAudioConnection();
     }
 
+    /**
+     * Bot attempts to play the audio file specified in the filename parameter.
+     * 
+     * @param filename The filename of file to play.
+     */
     public void playFile(String filename) {
         System.out.println("I am supposed to try to play the file: /sounds/" + filename);
 
