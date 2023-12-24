@@ -10,11 +10,15 @@ import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.managers.AudioManager;
 import net.dv8tion.jda.api.OnlineStatus;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
+import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 
 import java.io.File;
@@ -32,6 +36,9 @@ public class Bot extends ListenerAdapter {
     // Set up Lavaplater manager for playing audio
     AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 
+    AudioPlayer player;
+    TrackScheduler trackScheduler;
+
     public Bot(String TOKEN) {
         botJDA = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
@@ -46,10 +53,10 @@ public class Bot extends ListenerAdapter {
         playerManager.registerSourceManager(new YoutubeAudioSourceManager(true, null, null));
 
         // Make AudioPlayer player within the AudioPlayerManager manager
-        AudioPlayer player = playerManager.createPlayer();
+        player = playerManager.createPlayer();
 
-        // TrackScheduler trackScheduler = new TrackScheduler(player);
-        // player.addListener(trackScheduler);
+        trackScheduler = new TrackScheduler(player);
+        player.addListener(trackScheduler);
     }
 
     // Callback when a message is received
@@ -73,6 +80,7 @@ public class Bot extends ListenerAdapter {
             // Connect to the voice channel
             audioManager = myGuild.getAudioManager();
             audioChannel = event.getMember().getVoiceState().getChannel();
+            audioManager.setSendingHandler(new AudioPlayerSendHandler(player));
             audioManager.openAudioConnection(audioChannel);
 
             // Change activity and status to reflect new channel connection
@@ -138,6 +146,32 @@ public class Bot extends ListenerAdapter {
         File soundFile = new File("/sounds/" + filename).getAbsoluteFile();
 
         Logging.log("Web", soundFile.toString());
+
+        // Standin Youtube for "a"
+        playerManager.loadItem("Ku6nJjmEeaw", new AudioLoadResultHandler() {
+            @Override
+            public void trackLoaded(AudioTrack track) {
+                player.playTrack(track);
+            }
+
+            @Override
+            public void playlistLoaded(AudioPlaylist playlist) {
+                for (AudioTrack track : playlist.getTracks()) {
+                    Logging.log("TODO", "Implement AudioLoadResultHandler playlistLoaded");
+                    // trackScheduler.queue(track);
+                }
+            }
+
+            @Override
+            public void noMatches() {
+                // Notify the user that we've got nothing
+            }
+
+            @Override
+            public void loadFailed(FriendlyException throwable) {
+                // Notify the user that everything exploded
+            }
+        });
 
     }
 }

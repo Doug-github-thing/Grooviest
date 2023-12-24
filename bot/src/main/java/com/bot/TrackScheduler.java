@@ -7,6 +7,11 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 
 public class TrackScheduler extends AudioEventAdapter {
+
+    public TrackScheduler(AudioPlayer player) {
+        super();
+    }
+
     @Override
     public void onPlayerPause(AudioPlayer player) {
         // Player was paused
@@ -22,13 +27,13 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
-        Logging.log("Player", "Started a new track");
+        Logging.log("Player", "Started new track: " + track.toString());
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
-            Logging.log("Player", "Finished a track");
+            Logging.log("Player", "Finished track: " + track.toString());
         }
 
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext
@@ -46,13 +51,13 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackException(AudioPlayer player, AudioTrack track, FriendlyException exception) {
         // An already playing track threw an exception (track end event will still be
         // received separately)
-        Logging.log("Player", "Reached an exception");
+        Logging.log("Player", "Reached an exception playing track: " + track.toString());
     }
 
     @Override
     public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs) {
         // Audio track has been unable to provide us any audio, might want to just start
         // a new track
-        Logging.log("Player", "Player got stuck");
+        Logging.log("Player", "Player got stuck playing track: " + track.toString());
     }
 }
