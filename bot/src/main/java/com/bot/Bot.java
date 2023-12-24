@@ -8,7 +8,9 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.managers.AudioManager;
+import net.dv8tion.jda.api.OnlineStatus;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
@@ -34,6 +36,7 @@ public class Bot extends ListenerAdapter {
         botJDA = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(this)
+                .setStatus(OnlineStatus.IDLE)
                 .setActivity(Activity
                         .customStatus("Please use -join in a voice channel to connect"))
                 .build();
@@ -41,6 +44,12 @@ public class Bot extends ListenerAdapter {
         // Set up player manager to work with local audio, and youtube audio
         playerManager.registerSourceManager(new LocalAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
         playerManager.registerSourceManager(new YoutubeAudioSourceManager(true, null, null));
+
+        // Make AudioPlayer player within the AudioPlayerManager manager
+        AudioPlayer player = playerManager.createPlayer();
+
+        // TrackScheduler trackScheduler = new TrackScheduler(player);
+        // player.addListener(trackScheduler);
     }
 
     // Callback when a message is received
@@ -53,7 +62,7 @@ public class Bot extends ListenerAdapter {
                 || !event.getMessage().getContentRaw().startsWith("-"))
             return;
 
-        // "join" route
+        // "join" route: Identifies which audio channel the requestor is in, then joins.
         if (event.getMessage().getContentRaw().equalsIgnoreCase("-join")) {
             myGuild = event.getGuild();
 
@@ -64,13 +73,15 @@ public class Bot extends ListenerAdapter {
             // Connect to the voice channel
             audioManager = myGuild.getAudioManager();
             audioChannel = event.getMember().getVoiceState().getChannel();
-
             audioManager.openAudioConnection(audioChannel);
+
+            // Change activity and status to reflect new channel connection
+            botJDA.getPresence().setStatus(OnlineStatus.ONLINE);
             botJDA.getPresence().setActivity(Activity.customStatus(
                     "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
         }
 
-        // "egg" route
+        // "egg" route: Says egg.
         if (event.getMessage().getContentRaw().equalsIgnoreCase("-egg")) {
             event.getChannel().sendMessage("emngmgg").queue();
         }
@@ -84,7 +95,7 @@ public class Bot extends ListenerAdapter {
      */
     public void parseWebCommand(String str) {
         if (myGuild == null) {
-            System.out.println("Use '-join' command to connect me to a voice channel");
+            Logging.log("Web", "Use '-join' command to connect me to a voice channel");
             return;
         }
 
@@ -104,7 +115,7 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to join the currently selected audio channel.
      */
     public void join() {
-        System.out.println("Attempting to join the channel");
+        Logging.log("Web", "Attempting to join the channel");
         audioManager.openAudioConnection(audioChannel);
     }
 
@@ -112,7 +123,7 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to disconnect from the current audio channel.
      */
     public void leave() {
-        System.out.println("Attempting to leave the channel");
+        Logging.log("Web", "Attempting to leave the channel");
         audioManager.closeAudioConnection();
     }
 
@@ -122,10 +133,11 @@ public class Bot extends ListenerAdapter {
      * @param filename The filename of file to play.
      */
     public void playFile(String filename) {
-        System.out.println("I am supposed to try to play the file: /sounds/" + filename);
+        Logging.log("Web", "I am supposed to try to play the file: /sounds/" + filename);
 
         File soundFile = new File("/sounds/" + filename).getAbsoluteFile();
 
-        System.out.println(soundFile);
+        Logging.log("Web", soundFile.toString());
+
     }
 }
