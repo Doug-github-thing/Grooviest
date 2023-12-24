@@ -9,6 +9,7 @@ const App = () => {
         <h>Groovy Web app</h>
         <CommandButton text="Join" command="join" />
         <CommandButton text="Leave" command="leave" />
+        <CommandButton text="a" command="file/a.mp3" />
       </header>
     </div>
   );
