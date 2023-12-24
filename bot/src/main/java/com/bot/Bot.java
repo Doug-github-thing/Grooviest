@@ -1,6 +1,7 @@
 package com.bot;
 
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -8,24 +9,38 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.unions.AudioChannelUnion;
 import net.dv8tion.jda.api.managers.AudioManager;
 
+import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
+import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
+
 import java.io.File;
 
 public class Bot extends ListenerAdapter {
 
+    // Bot instance, used for setting activity after initial build
+    JDA botJDA;
+
+    // Set up JDA Discord parameters
     Guild myGuild;
     AudioManager audioManager;
     AudioChannelUnion audioChannel;
 
-    // AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
-    // AudioSourceManagers.registerRemoteSources(playerManager);
-    // attempting to use Lavaplayer for audio
+    // Set up Lavaplater manager for playing audio
+    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 
     public Bot(String TOKEN) {
-        JDABuilder.createDefault(TOKEN)
+        botJDA = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(this)
-                .setActivity(Activity.customStatus("Being a little Bot"))
+                .setActivity(Activity
+                        .customStatus("Please use -join in a voice channel to connect"))
                 .build();
+
+        // Set up player manager to work with local audio, and youtube audio
+        playerManager.registerSourceManager(new LocalAudioSourceManager(MediaContainerRegistry.DEFAULT_REGISTRY));
+        playerManager.registerSourceManager(new YoutubeAudioSourceManager(true, null, null));
     }
 
     // Callback when a message is received
@@ -51,6 +66,8 @@ public class Bot extends ListenerAdapter {
             audioChannel = event.getMember().getVoiceState().getChannel();
 
             audioManager.openAudioConnection(audioChannel);
+            botJDA.getPresence().setActivity(Activity.customStatus(
+                    "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
         }
 
         // "egg" route
