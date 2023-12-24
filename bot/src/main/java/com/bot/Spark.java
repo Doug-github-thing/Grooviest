@@ -8,29 +8,24 @@ public class Spark {
     /**
      * Sets up the project's Java Spark web server.
      * 
-     * @param bot              An object encapsulating Bot behavior and state.
-     * @param keystorePassword Password for the locally saved KeyStore used for SSL.
+     * @param bot An object encapsulating Bot behavior and state.
      */
-    public static void setupRoutes(Bot bot, String keystorePassword) {
+    public static void setupRoutes(Bot bot) {
 
         final int port = 25566;
 
         // Set up Spark
         port(port);
 
-        // Import local SSL keystore to allow HTTPS communication from the web
-        // Requires KeyStore.jks to be in the root directory
-        // secure("KeyStore.jks", keystorePassword, null, null);
-
         // Allow through CORS for development
-        // after((Filter) (request, response) -> {
-        // response.header("Access-Control-Allow-Origin", "*");
-        // response.header("Access-Control-Allow-Methods", "GET");
-        // });
+        after((Filter) (request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Methods", "GET");
+        });
 
         // Get "/" to make sure it's running
         get("/", (req, res) -> {
-            return "Hello World";
+            return "The Grooviest bot is live!";
         });
 
         // For basic single line commands
