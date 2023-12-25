@@ -7,7 +7,6 @@ import { getDatabase } from "firebase/database";
 const firebaseConfig = {
   apiKey: "AIzaSyCRGvzTsVU7PLkSnddisezX5qwuzDoIUmY",
   authDomain: "grooviest-bot.firebaseapp.com",
-  databaseURL: "https://grooviest-bot-default-rtdb.firebaseio.com",
   projectId: "grooviest-bot",
   storageBucket: "grooviest-bot.appspot.com",
   messagingSenderId: "270103660058",
@@ -21,3 +20,5 @@ const app = initializeApp(firebaseConfig);
 
 // Initialize Realtime Database and get a reference to the service
 const database = getDatabase(app);
+
+export default database;
