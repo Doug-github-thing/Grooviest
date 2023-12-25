@@ -6,12 +6,6 @@ const Queue = ({ className }) => {
     const [songs, setSongs] = useState([]);
 
     const db = getDatabase();
-    // const breadRef = ref(db, '/bread');
-    
-    // onValue(breadRef, (snapshot) => {
-    //     console.log(snapshot.val());
-    //     setBreadValue(snapshot.val());
-    // });
 
     useEffect(() => {
         const query = ref(db, "songs");
