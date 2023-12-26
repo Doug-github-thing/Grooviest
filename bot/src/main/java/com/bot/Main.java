@@ -12,6 +12,6 @@ public class Main {
 
         Bot bot = new Bot(token, db);
 
-        Spark.setupRoutes(bot);
+        Spark.setupRoutes(bot, db);
     }
 }

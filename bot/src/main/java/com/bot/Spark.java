@@ -9,8 +9,9 @@ public class Spark {
      * Sets up the project's Java Spark web server.
      * 
      * @param bot An object encapsulating Bot behavior and state.
+     * @param db  A Database object encapusating Firebase database functions.
      */
-    public static void setupRoutes(Bot bot) {
+    public static void setupRoutes(Bot bot, Database db) {
 
         final int port = 25566;
 
@@ -29,14 +30,14 @@ public class Spark {
         });
 
         // For basic single line commands
-        post("/bot_api/:param", (req, res) -> {
+        post("/api/:param", (req, res) -> {
             String param = req.params(":param");
             bot.parseWebCommand(param);
             return "Attempting to perform command: " + param;
         });
 
         // Plays audio with a given filename
-        post("/bot_api/file/:name", (req, res) -> {
+        post("/api/file/:name", (req, res) -> {
             String name = req.params(":name");
             boolean success = bot.playFile(name);
 
@@ -47,6 +48,20 @@ public class Spark {
                 res.body("Unsuccessful");
 
             return "Attempting to play file: " + name;
+        });
+
+        // Adds audio with the given youtube ID to the queue
+        post("/api/add/:url", (req, res) -> {
+            String url = req.params(":url");
+            boolean success = db.addEntry("brah", url);
+
+            res.status(200);
+            if (success)
+                res.body("Successful");
+            else
+                res.body("Unsuccessful");
+
+            return "Attempting to add the following youtube video to the queue: " + url;
         });
 
         // Stop Spark gracefully on shutdown

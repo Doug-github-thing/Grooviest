@@ -108,4 +108,21 @@ public class Database {
         });
     }
 
+    public boolean addEntry(String newKey, String newValue) {
+
+        Logging.log(logContext, "Attempting to add new entry: " + newKey + ", " + newValue);
+
+        DatabaseReference ref = db.getReference(newKey);
+
+        ref.setValue(newValue, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);
+                return;
+            }
+            Logging.log(logContext, "Error updating location to: " + newValue + ".\n" + databaseError.getMessage());
+        });
+
+        return true;
+    }
+
 }
