@@ -45,6 +45,10 @@ public class Database {
      */
     private DatabaseReference songsRef;
 
+    /**
+     * Creates a Database object, which encapsulates Firebase Realtime Database
+     * connection, and defines helper methods to facilitate CRUD commands.
+     */
     public Database() {
 
         try {
