@@ -5,6 +5,7 @@
 
 .id {
     float: left;
+    text-align: left;
 }
 
 .button {
