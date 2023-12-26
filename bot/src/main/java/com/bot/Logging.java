@@ -8,15 +8,17 @@ import java.text.SimpleDateFormat;
  */
 public class Logging {
 
+    private static String prefix = "  ";
+
     private static String getTimestamp() {
         return new SimpleDateFormat("HH:mm:ss MM/dd/yyyy").format(new java.util.Date());
     }
 
     public static void log(String str) {
-        System.out.println("\t[" + getTimestamp() + "]: " + str);
+        System.out.println(prefix + "[" + getTimestamp() + "]: " + str);
     }
 
     public static void log(String title, String str) {
-        System.out.println("\t[" + getTimestamp() + "] [" + title + "]: " + str);
+        System.out.println(prefix + "[" + getTimestamp() + "] [" + title + "]: " + str);
     }
 }
