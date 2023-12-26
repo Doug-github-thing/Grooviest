@@ -7,10 +7,10 @@ public class Main {
 
         Database db = new Database();
 
-        db.setBreadValue("good bread");
-        Logging.log("Main", db.getBreadValue());
+        // db.setBreadValue("good bread");
+        // Logging.log("Main", db.getBreadValue());
 
-        Bot bot = new Bot(token);
+        Bot bot = new Bot(token, db);
 
         Spark.setupRoutes(bot);
     }

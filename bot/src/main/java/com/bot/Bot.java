@@ -23,29 +23,57 @@ import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 
 import java.io.File;
 
+/**
+ * An object encapsulating Discord Bot functions according to JDA API.
+ */
 public class Bot extends ListenerAdapter {
 
     // Bot instance, used for setting activity after initial build
-    JDA botJDA;
+    private JDA botJDA;
 
     // Set up JDA Discord parameters
-    Guild myGuild;
-    AudioManager audioManager;
-    AudioChannelUnion audioChannel;
+    private Guild myGuild;
+    private AudioManager audioManager;
+    private AudioChannelUnion audioChannel;
 
     // Set up Lavaplater manager for playing audio
-    AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
+    private AudioPlayerManager playerManager = new DefaultAudioPlayerManager();
 
-    AudioPlayer player;
-    TrackScheduler trackScheduler;
+    private AudioPlayer player;
+    private TrackScheduler trackScheduler;
 
-    public Bot(String TOKEN) {
+    /**
+     * Prefix for console logs which identify that a log belongs to this component.
+     */
+    private String logContext = "Bot";
+
+    /**
+     * Instance of my Database object. Controls connection to the Firebase Realtime
+     * Database. Defines get and set methods for values in the database.
+     * Created as null, passed to the constructor on build.
+     */
+    private Database db;
+
+    /**
+     * Creates Bot instance. Requires Bot API token, and a database connection to
+     * the Firebase Realtime Database for reading and writing queue, and
+     * communicating bot state to the web clients.
+     * The Database connection is controlled by that Database object.
+     * 
+     * @param TOKEN Discord private bot ID token, from Discord bot dev portal.
+     * @param db    Instance of my Database object.
+     */
+    public Bot(String TOKEN, Database db) {
+
+        // Initialize the database connection.
+        this.db = db;
+
+        // Initialize the Bot connection using JDA Discord bot API.
         botJDA = JDABuilder.createDefault(TOKEN)
                 .enableIntents(GatewayIntent.MESSAGE_CONTENT)
                 .addEventListeners(this)
                 .setStatus(OnlineStatus.IDLE)
-                .setActivity(Activity
-                        .customStatus("Please use -join in a voice channel to connect"))
+                .setActivity(Activity.customStatus("Please use -join in a voice channel to connect"))
                 .build();
 
         // Set up player manager to work with local audio, and youtube audio
@@ -55,6 +83,7 @@ public class Bot extends ListenerAdapter {
         // Make AudioPlayer player within the AudioPlayerManager manager
         player = playerManager.createPlayer();
 
+        // Initialize Lavaplayer functions to play sounds through the bot voice channel.
         trackScheduler = new TrackScheduler(player);
         player.addListener(trackScheduler);
     }
@@ -71,6 +100,13 @@ public class Bot extends ListenerAdapter {
 
         // "join" route: Identifies which audio channel the requestor is in, then joins.
         if (event.getMessage().getContentRaw().equalsIgnoreCase("-join")) {
+
+            // Check if user is connected to a voice channel
+            if (event.getMember().getVoiceState().getChannel() == null) {
+                event.getChannel().sendMessage("Please join a voice channel in this server").queue();
+                return;
+            }
+
             myGuild = event.getGuild();
 
             // Let 'em know
@@ -83,10 +119,11 @@ public class Bot extends ListenerAdapter {
             audioManager.setSendingHandler(new AudioPlayerSendHandler(player));
             audioManager.openAudioConnection(audioChannel);
 
-            // Change activity and status to reflect new channel connection
+            // Change activity and status, update database to reflect new channel connection
             botJDA.getPresence().setStatus(OnlineStatus.ONLINE);
             botJDA.getPresence().setActivity(Activity.customStatus(
                     "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
+            db.setLocationValue(myGuild.getName() + ": " + audioChannel.getName());
         }
 
         // "egg" route: Says egg.
@@ -103,7 +140,7 @@ public class Bot extends ListenerAdapter {
      */
     public void parseWebCommand(String str) {
         if (myGuild == null) {
-            Logging.log("Web", "Use '-join' command to connect me to a voice channel");
+            Logging.log(logContext, "Use '-join' command to connect me to a voice channel");
             return;
         }
 
@@ -123,7 +160,7 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to join the currently selected audio channel.
      */
     public void join() {
-        Logging.log("Web", "Attempting to join the channel");
+        Logging.log(logContext, "Attempting to join the channel");
         audioManager.openAudioConnection(audioChannel);
     }
 
@@ -131,7 +168,7 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to disconnect from the current audio channel.
      */
     public void leave() {
-        Logging.log("Web", "Attempting to leave the channel");
+        Logging.log(logContext, "Attempting to leave the channel");
         audioManager.closeAudioConnection();
     }
 
@@ -139,13 +176,21 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to play the audio file specified in the filename parameter.
      * 
      * @param filename The filename of file to play.
+     * @return True if performed successfully. False if not.
      */
-    public void playFile(String filename) {
-        Logging.log("Web", "I am supposed to try to play the file: /sounds/" + filename);
+    public boolean playFile(String filename) {
+
+        // If not currently in a channel
+        if (audioManager == null || !audioManager.isConnected()) {
+            Logging.log(logContext, "Not connected to a channel!");
+            return false;
+        }
+
+        Logging.log(logContext, "I am supposed to try to play the file: /sounds/" + filename);
 
         File soundFile = new File("/sounds/" + filename).getAbsoluteFile();
 
-        Logging.log("Web", soundFile.toString());
+        Logging.log(logContext, soundFile.toString());
 
         // Standin Youtube for "a"
         playerManager.loadItem("Ku6nJjmEeaw", new AudioLoadResultHandler() {
@@ -173,5 +218,6 @@ public class Bot extends ListenerAdapter {
             }
         });
 
+        return true;
     }
 }

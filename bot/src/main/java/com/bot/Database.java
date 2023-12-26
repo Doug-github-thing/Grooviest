@@ -34,7 +34,7 @@ public class Database {
      * Holds a database reference to the Bread parameter.
      * Gets initilized in the constructor before being called.
      */
-    private DatabaseReference breadRef;
+    private DatabaseReference locationRef;
 
     public Database() {
 
@@ -58,25 +58,23 @@ public class Database {
 
         // At this point, the app should be initilized
         db = FirebaseDatabase.getInstance();
-        breadRef = db.getReference("bread");
+        locationRef = db.getReference("location");
     }
 
     /**
-     * Checks the firebase database for the value of the Bread variable.
-     * Access the actual value of this variable by calling
-     * getBreadValue().get(). throws ExecutionException, InterruptedException
+     * Checks the firebase database for the value of the Location variable.
+     * Uses CompletableFuture class to handle async aspect of database querying.
      * 
-     * @return A CompletableFuture<String> promising the value of the Bread
-     *         variable.
+     * @return String content of the Location variable.
      */
-    public String getBreadValue() {
+    public String getConnectionValue() {
         CompletableFuture<String> future = new CompletableFuture<>();
 
-        breadRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        locationRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                String breadValue = dataSnapshot.getValue(String.class);
-                future.complete(breadValue);
+                String locationValue = dataSnapshot.getValue(String.class);
+                future.complete(locationValue);
             }
 
             @Override
@@ -95,18 +93,18 @@ public class Database {
     }
 
     /**
-     * Change the value of Bread in the database to the specified String.
+     * Change the value of Location in the database to the specified String.
      * 
      * @param newValue New String value with which to replace the old value.
      */
-    public void setBreadValue(String newValue) {
+    public void setLocationValue(String newValue) {
 
-        breadRef.setValue(newValue, (databaseError, databaseReference) -> {
+        locationRef.setValue(newValue, (databaseError, databaseReference) -> {
             if (databaseError == null) {
-                System.out.println("Data saved successfully.");
+                Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);
                 return;
             }
-            System.out.println("Data could not be saved " + databaseError.getMessage());
+            Logging.log(logContext, "Error updating location to: " + newValue + ".\n" + databaseError.getMessage());
         });
     }
 
