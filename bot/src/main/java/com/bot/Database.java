@@ -90,7 +90,7 @@ public class Database {
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 future.completeExceptionally(
-                        new RuntimeException("Error reading bread value: " + databaseError.getMessage()));
+                        new RuntimeException("Error reading location value: " + databaseError.getMessage()));
             }
         });
 
@@ -104,8 +104,12 @@ public class Database {
 
     /**
      * Checks the database for a current list of songs.
+     * 
+     * @return An ArrayList of Song objects containing each song.
      */
     public ArrayList<Song> getSongs() {
+        CompletableFuture<ArrayList<Song>> futureSongs = new CompletableFuture<>();
+
         songsRef.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -133,15 +137,26 @@ public class Database {
                     songPosition++;
                 }
 
-                Logging.log(logContext, "Finally, my songs arraylist: " + mySongs.toString());
+                futureSongs.complete(mySongs);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Logging.log(logContext, "Error accessing songs in the database: " + databaseError.getDetails());
+                futureSongs.completeExceptionally(
+                        new RuntimeException("Error reading songs: " + databaseError.getMessage()));
             }
         });
 
+        // By the time the code reaches here, the songs should have been parsed
+        // to a CompletableFuture containing the ArrayList of songs.
+
+        // Use .get() to complete the Future list and return
+        try {
+            return futureSongs.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return new ArrayList<Song>();
     }
 

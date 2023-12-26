@@ -7,10 +7,10 @@ public class Main {
 
         Database db = new Database();
 
-        db.getSongs();
-
         Bot bot = new Bot(token, db);
 
         Spark.setupRoutes(bot, db);
+
+        Logging.log("Songs", "These songs are in the database: " + db.getSongs());
     }
 }
