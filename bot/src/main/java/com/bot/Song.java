@@ -74,4 +74,12 @@ public class Song {
     public void advance() {
         this.position--;
     }
+
+    /**
+     * Structures a Song as a string to print to stdout.
+     */
+    public String toString() {
+        return "Song object: {Position "
+                + this.position + ", " + this.name + ": " + this.url + "}";
+    }
 }
