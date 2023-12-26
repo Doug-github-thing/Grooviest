@@ -1,22 +1,25 @@
 import './App.css';
 import './api/Database.js';
 import Header from './components/Header';
+import TextForm from './components/TextForm.js';
 import Soundboard from './components/Soundboard';
 import Queue from './components/Queue';
 
 const App = () => {
-  return (
-    <div className="app">
 
-      <Header title={"Groovy Web App"} />
+    return (
+      <div className="app">
 
-      <div>
-        <Soundboard className="column" />
-        <Queue className="column" />
+          <Header title="Groovy Web App" />
+          <TextForm label="Add song ID"/>
+
+          <div>
+              <Soundboard className="column" />
+              <Queue className="column" />
+          </div>
+      
       </div>
-    
-    </div>
-  );
+    );
 }
 
 export default App;
