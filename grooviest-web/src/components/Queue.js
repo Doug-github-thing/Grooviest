@@ -34,7 +34,7 @@ const Queue = ({ className }) => {
                 {songs.map((song, index) => (
                     <div className="song-wrapper">
                       <div key={index}> {index} Name: {song.name} URL: {song.url} </div>
-                      <CommandButton text="-" command={`remove/${song.url}`}/>
+                      <CommandButton text="-" command={`remove/${index}`}/>
                     </div>
                 ))}
             </div>
