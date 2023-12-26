@@ -1,11 +1,9 @@
 package com.bot;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.*;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -15,6 +13,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.concurrent.CompletableFuture;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Defines and controls connection to the Firebase Realtime Database.
@@ -134,9 +133,14 @@ public class Database {
                 ArrayList<Object> objectSongs = (ArrayList<Object>) genericSongs;
                 int songPosition = 0;
                 for (Object item : objectSongs) {
-                    System.out.print("Found " + item);
-                    System.out.println(". Type: " + item.getClass());
-                    Song thisSong = new Song(songPosition, "PlaceholderName", "PlaceholderURL");
+
+                    // Assert this this is a HashMap, which it will be since the
+                    // song data is stored in a JSON Object
+                    HashMap<String, String> thisMap = (HashMap) item;
+
+                    String name = thisMap.get("name");
+                    String url = thisMap.get("url");
+                    Song thisSong = new Song(songPosition, name, url);
                     mySongs.add(thisSong);
                     songPosition++;
                 }

@@ -201,10 +201,10 @@ public class Bot extends ListenerAdapter {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                for (AudioTrack track : playlist.getTracks()) {
-                    Logging.log("TODO", "Implement AudioLoadResultHandler playlistLoaded");
-                    // trackScheduler.queue(track);
-                }
+                // for (AudioTrack track : playlist.getTracks()) {
+                // Logging.log("TODO", "Implement AudioLoadResultHandler playlistLoaded");
+                // // trackScheduler.queue(track);
+                // }
             }
 
             @Override
