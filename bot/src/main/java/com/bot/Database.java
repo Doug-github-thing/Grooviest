@@ -108,7 +108,7 @@ public class Database {
         });
     }
 
-    public boolean addEntry(String newKey, String newValue) {
+    public void addEntry(String newKey, String newValue) {
 
         Logging.log(logContext, "Attempting to add new entry: " + newKey + ", " + newValue);
 
@@ -121,8 +121,6 @@ public class Database {
             }
             Logging.log(logContext, "Error updating location to: " + newValue + ".\n" + databaseError.getMessage());
         });
-
-        return true;
     }
 
 }
