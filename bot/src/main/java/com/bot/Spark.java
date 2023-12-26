@@ -38,7 +38,14 @@ public class Spark {
         // Plays audio with a given filename
         post("/bot_api/file/:name", (req, res) -> {
             String name = req.params(":name");
-            bot.playFile(name);
+            boolean success = bot.playFile(name);
+
+            res.status(200);
+            if (success)
+                res.body("Successful");
+            else
+                res.body("Unsuccessful");
+
             return "Attempting to play file: " + name;
         });
 
