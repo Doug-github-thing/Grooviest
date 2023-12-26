@@ -2,6 +2,7 @@ package com.bot;
 
 import static spark.Spark.*;
 import spark.Filter;
+import java.lang.Integer;
 
 public class Spark {
 
@@ -57,6 +58,17 @@ public class Spark {
 
             res.status(200);
             return "Attempting to add the following youtube video to the queue: " + url;
+        });
+
+        // Removes the queue element with the given position
+        post("/api/remove/:position", (req, res) -> {
+            String stringPosition = req.params(":position");
+            int position = Integer.parseInt(stringPosition);
+
+            db.removeSong(position);
+
+            res.status(200);
+            return "Attempting to remove the song at the following position: " + position;
         });
 
         // Stop Spark gracefully on shutdown

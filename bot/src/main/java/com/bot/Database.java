@@ -228,4 +228,16 @@ public class Database {
         });
     }
 
+    /**
+     * Given a queue position, attempts to remove the song at that position.
+     * 
+     * @param position The queue position of the song to be removed
+     */
+    public void removeSong(int position) {
+
+        DatabaseReference deleteSongRef = db.getReference("songs/" + position);
+        Logging.log(logContext, "Deleting song at position " + position);
+        deleteSongRef.removeValueAsync();
+    }
+
 }
