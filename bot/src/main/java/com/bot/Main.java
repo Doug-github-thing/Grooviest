@@ -3,13 +3,18 @@ package com.bot;
 import java.util.concurrent.ExecutionException;
 
 public class Main {
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
+    public static void main(String[] args) {
 
         String token = System.getenv("DISCORD_TOKEN");
 
         Database db = new Database();
-        String breadValue = db.getBreadValue().get();
-        Logging.log("Main", breadValue);
+
+        try {
+            Logging.log("Main", db.getBreadValue());
+        } catch (ExecutionException | InterruptedException e) {
+            Logging.log("Main", "Error accessing Bread value");
+            e.printStackTrace();
+        }
 
         Bot bot = new Bot(token);
 

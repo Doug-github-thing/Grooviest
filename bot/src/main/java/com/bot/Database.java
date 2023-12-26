@@ -70,7 +70,7 @@ public class Database {
      * @return A CompletableFuture<String> promising the value of the Bread
      *         variable.
      */
-    public CompletableFuture<String> getBreadValue() {
+    public String getBreadValue() throws ExecutionException, InterruptedException {
         CompletableFuture<String> future = new CompletableFuture<>();
 
         breadRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -87,6 +87,6 @@ public class Database {
             }
         });
 
-        return future;
+        return future.get();
     }
 }
