@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.*;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -12,6 +13,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.CompletableFuture;
+
+import java.util.ArrayList;
 
 /**
  * Defines and controls connection to the Firebase Realtime Database.
@@ -31,10 +34,16 @@ public class Database {
     private FirebaseDatabase db;
 
     /**
-     * Holds a database reference to the Bread parameter.
+     * Holds a database reference to the Location parameter.
      * Gets initilized in the constructor before being called.
      */
     private DatabaseReference locationRef;
+
+    /**
+     * Holds a database reference to the Songs list.
+     * Gets initilized in the constructor before being called.
+     */
+    private DatabaseReference songsRef;
 
     public Database() {
 
@@ -59,6 +68,7 @@ public class Database {
         // At this point, the app should be initilized
         db = FirebaseDatabase.getInstance();
         locationRef = db.getReference("location");
+        songsRef = db.getReference("songs");
     }
 
     /**
@@ -93,6 +103,49 @@ public class Database {
     }
 
     /**
+     * Checks the database for a current list of songs.
+     */
+    public ArrayList<Song> getSongs() {
+        songsRef.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // New arrayList to return.
+                ArrayList<Song> mySongs = new ArrayList<Song>();
+
+                // Reads the songs. If it's an ArrayList like it should be,
+                // sets them up to be processed as Song objects.
+                Object genericSongs = dataSnapshot.getValue();
+
+                // If the songs were not returned as an arraylist, stop checking.
+                if (!(genericSongs instanceof ArrayList))
+                    return;
+
+                // Since we now know genericSongs IS an arraylist, convert each
+                // item into a Song format.
+                ArrayList<Object> objectSongs = (ArrayList<Object>) genericSongs;
+                int songPosition = 0;
+                for (Object item : objectSongs) {
+                    System.out.print("Found " + item);
+                    System.out.println(". Type: " + item.getClass());
+                    Song thisSong = new Song(songPosition, "PlaceholderName", "PlaceholderURL");
+                    mySongs.add(thisSong);
+                    songPosition++;
+                }
+
+                Logging.log(logContext, "Finally, my songs arraylist: " + mySongs.toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Logging.log(logContext, "Error accessing songs in the database: " + databaseError.getDetails());
+            }
+        });
+
+        return new ArrayList<Song>();
+    }
+
+    /**
      * Change the value of Location in the database to the specified String.
      * 
      * @param newValue New String value with which to replace the old value.
@@ -108,12 +161,16 @@ public class Database {
         });
     }
 
+    /**
+     * Adds a new String Key/Value pair to the root of the database.
+     * Updates it if the value newKey was already in the database.
+     * 
+     * @param newKey   Key of the new entry.
+     * @param newValue Value of the new entry.
+     */
     public void addEntry(String newKey, String newValue) {
 
-        Logging.log(logContext, "Attempting to add new entry: " + newKey + ", " + newValue);
-
         DatabaseReference ref = db.getReference(newKey);
-
         ref.setValue(newValue, (databaseError, databaseReference) -> {
             if (databaseError == null) {
                 Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);

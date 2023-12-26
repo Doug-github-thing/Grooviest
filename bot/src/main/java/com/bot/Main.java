@@ -7,8 +7,7 @@ public class Main {
 
         Database db = new Database();
 
-        // db.setBreadValue("good bread");
-        // Logging.log("Main", db.getBreadValue());
+        db.getSongs();
 
         Bot bot = new Bot(token, db);
 
