@@ -24,10 +24,9 @@ const Queue = ({ className }) => {
     return (
         <div className={className}>
             <h2>Queue</h2>
-            <div>bwa</div>
             <div>
                 {songs.map((song, index) => (
-                    <div key={song.position}> {song.position} Name: {song.name} URL: {song.url} </div>
+                    <div key={index}> {index} Name: {song.name} URL: {song.url} </div>
                 ))}
             </div>
         </div>
