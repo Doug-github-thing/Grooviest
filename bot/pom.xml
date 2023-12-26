@@ -19,7 +19,38 @@
 
   <dependencies>
 
-    <!-- junit for unit testing -->
+    <!-- Java Discord API
+          https://mvnrepository.com/artifact/net.dv8tion/JDA -->
+    <dependency>
+      <groupId>net.dv8tion</groupId>
+      <artifactId>JDA</artifactId>
+      <version>5.0.0-beta.18</version>
+    </dependency>
+
+    <!-- LavaPlayer for playing audio
+      https://github.com/lavalink-devs/lavaplayer#readme -->
+    <dependency>
+      <groupId>dev.arbjerg</groupId>
+      <artifactId>lavaplayer</artifactId>
+      <version>2.0.4</version>
+    </dependency>
+
+    <!-- Spark for Web Server HTTP routes -->
+    <dependency>
+      <groupId>com.sparkjava</groupId>
+      <artifactId>spark-core</artifactId>
+      <version>2.9.3</version>
+    </dependency>
+
+    <!-- For access to the firebase database
+          https://firebase.google.com/docs/admin/setup#java -->
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>9.2.0</version>
+    </dependency>
+
+      <!-- junit for unit testing -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -27,36 +58,12 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/net.dv8tion/JDA
-          Java Discord API -->
-    <dependency>
-      <groupId>net.dv8tion</groupId>
-      <artifactId>JDA</artifactId>
-      <version>5.0.0-beta.18</version>
-    </dependency>
-
-    <!-- https://github.com/lavalink-devs/lavaplayer#readme
-          LavaPlayer for playing audio -->
-    <dependency>
-      <groupId>dev.arbjerg</groupId>
-      <artifactId>lavaplayer</artifactId>
-      <version>2.0.4</version>
-    </dependency>
-
-    <!-- Spark for HTTP routes -->
-    <dependency>
-      <groupId>com.sparkjava</groupId>
-      <artifactId>spark-core</artifactId>
-      <version>2.9.3</version>
-    </dependency>
-
   </dependencies>
   <build>
     <plugins>
 
-
-	<!-- Specify compiler version -->
-	<plugin>
+      <!-- Specify compiler version -->
+      <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-compiler-plugin</artifactId>
 	    <version>3.12.0</version>

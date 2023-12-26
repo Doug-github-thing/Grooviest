@@ -5,6 +5,8 @@ public class Main {
 
         String token = System.getenv("DISCORD_TOKEN");
 
+        Database db = new Database();
+
         Bot bot = new Bot(token);
 
         Spark.setupRoutes(bot);

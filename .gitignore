@@ -12,6 +12,10 @@ node_modules
 firebase-debug.log*
 firebase-debug.*.log*
 
+# Firebase bot app
+# Config file with key for access to the database
+bot-database-account.json
+
 # Distribution / packaging
 .Python
 build/
