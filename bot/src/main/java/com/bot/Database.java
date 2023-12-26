@@ -67,7 +67,7 @@ public class Database {
      * 
      * @return String content of the Location variable.
      */
-    public String getConnectionValue() {
+    public String getLocationValue() {
         CompletableFuture<String> future = new CompletableFuture<>();
 
         locationRef.addListenerForSingleValueEvent(new ValueEventListener() {

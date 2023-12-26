@@ -56,10 +56,6 @@ public class Spark {
             boolean success = db.addEntry("brah", url);
 
             res.status(200);
-            if (success)
-                res.body("Successful");
-            else
-                res.body("Unsuccessful");
 
             return "Attempting to add the following youtube video to the queue: " + url;
         });
