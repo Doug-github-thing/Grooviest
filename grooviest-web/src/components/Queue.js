@@ -1,5 +1,11 @@
+// Reactively display the current queue
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
+
+// For displaying buttons
+import CommandButton from "./CommandButton";
+
+import "./Queue.css";
 
 const Queue = ({ className }) => {
 
@@ -26,7 +32,10 @@ const Queue = ({ className }) => {
             <h2>Queue</h2>
             <div>
                 {songs.map((song, index) => (
-                    <div key={index}> {index} Name: {song.name} URL: {song.url} </div>
+                    <div className="song-wrapper">
+                      <div key={index}> {index} Name: {song.name} URL: {song.url} </div>
+                      <CommandButton text="-" command={`remove/${song.url}`}/>
+                    </div>
                 ))}
             </div>
         </div>
