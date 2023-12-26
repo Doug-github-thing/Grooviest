@@ -1,7 +1,5 @@
 package com.bot;
 
-import java.util.concurrent.ExecutionException;
-
 public class Main {
     public static void main(String[] args) {
 
@@ -9,12 +7,8 @@ public class Main {
 
         Database db = new Database();
 
-        try {
-            Logging.log("Main", db.getBreadValue());
-        } catch (ExecutionException | InterruptedException e) {
-            Logging.log("Main", "Error accessing Bread value");
-            e.printStackTrace();
-        }
+        db.setBreadValue("good bread");
+        Logging.log("Main", db.getBreadValue());
 
         Bot bot = new Bot(token);
 

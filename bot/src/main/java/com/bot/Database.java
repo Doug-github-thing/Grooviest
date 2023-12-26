@@ -12,7 +12,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Defines and controls connection to the Firebase Realtime Database.
@@ -70,7 +69,7 @@ public class Database {
      * @return A CompletableFuture<String> promising the value of the Bread
      *         variable.
      */
-    public String getBreadValue() throws ExecutionException, InterruptedException {
+    public String getBreadValue() {
         CompletableFuture<String> future = new CompletableFuture<>();
 
         breadRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -87,6 +86,28 @@ public class Database {
             }
         });
 
-        return future.get();
+        try {
+            return future.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "Error getting value";
     }
+
+    /**
+     * Change the value of Bread in the database to the specified String.
+     * 
+     * @param newValue New String value with which to replace the old value.
+     */
+    public void setBreadValue(String newValue) {
+
+        breadRef.setValue(newValue, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                System.out.println("Data saved successfully.");
+                return;
+            }
+            System.out.println("Data could not be saved " + databaseError.getMessage());
+        });
+    }
+
 }
