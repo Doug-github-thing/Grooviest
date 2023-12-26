@@ -11,6 +11,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+
 /**
  * Defines and controls connection to the Firebase Realtime Database.
  * https://firebase.google.com/docs/admin/setup
@@ -59,22 +62,31 @@ public class Database {
         breadRef = db.getReference("bread");
     }
 
-    public String getBread() {
-
-        String myBreadValue;
+    /**
+     * Checks the firebase database for the value of the Bread variable.
+     * Access the actual value of this variable by calling
+     * getBreadValue().get(). throws ExecutionException, InterruptedException
+     * 
+     * @return A CompletableFuture<String> promising the value of the Bread
+     *         variable.
+     */
+    public CompletableFuture<String> getBreadValue() {
+        CompletableFuture<String> future = new CompletableFuture<>();
 
         breadRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                Logging.log(logContext, dataSnapshot.getValue().toString());
+                String breadValue = dataSnapshot.getValue(String.class);
+                future.complete(breadValue);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // ...
+                future.completeExceptionally(
+                        new RuntimeException("Error reading bread value: " + databaseError.getMessage()));
             }
         });
 
-        return "bwa";
+        return future;
     }
 }
