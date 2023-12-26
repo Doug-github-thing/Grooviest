@@ -199,7 +199,32 @@ public class Database {
                 Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);
                 return;
             }
-            Logging.log(logContext, "Error updating location to: " + newValue + ".\n" + databaseError.getMessage());
+            Logging.log(logContext,
+                    "Error updating " + newKey + " to: " + newValue + ".\n" + databaseError.getMessage());
+        });
+    }
+
+    /**
+     * Given a youtube ID of a song, adds to the given URL to the end of the queue.
+     * 
+     * @param url The Youtube ID of the song to add
+     */
+    public void addSong(String url) {
+
+        // Figure out what position value to assign to this song by getting a list of
+        // all songs, and counting how many there are.
+        int position = getSongs().size();
+        DatabaseReference newSongRef = db.getReference("songs/" + position);
+
+        Song newSong = new Song(position, "placeholderName", url);
+
+        newSongRef.setValue(newSong, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                Logging.log(logContext, databaseReference.getKey() + " updated to " + newSong);
+                return;
+            }
+            Logging.log(logContext,
+                    "Error updating songs/" + position + " to: " + newSong + ".\n" + databaseError.getMessage());
         });
     }
 

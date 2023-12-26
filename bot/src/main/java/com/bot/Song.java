@@ -39,6 +39,16 @@ public class Song {
     }
 
     /**
+     * Default constructor that takes no arguments is required by Firebase rtdb
+     * for adding a custom class to the database.
+     */
+    public Song() {
+        this.position = -1;
+        this.name = null;
+        this.url = null;
+    }
+
+    /**
      * @return This song's position in the queue.
      */
     public int getPosition() {
@@ -79,7 +89,7 @@ public class Song {
      * Structures a Song as a string to print to stdout.
      */
     public String toString() {
-        return "Song object: {Position "
+        return "{Position "
                 + this.position + ", " + this.name + ": " + this.url + "}";
     }
 }
