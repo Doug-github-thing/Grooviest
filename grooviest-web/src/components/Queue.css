@@ -1,5 +1,12 @@
 .song-wrapper {
-    display: flex;
-    align-items: center;
-    font-size: x-large;
+    width: 100%;
+    overflow: hidden;
+}
+
+.id {
+    float: left;
+}
+
+.button {
+    float: right;
 }
