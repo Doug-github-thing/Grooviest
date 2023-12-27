@@ -243,6 +243,7 @@ public class Bot extends ListenerAdapter {
         ArrayList<Song> queue = db.getSongs();
         if (queue.size() == 0) {
             Logging.log(logContext, "Reached end of queue");
+            db.addEntry("now_playing", "");
             return;
         }
 
@@ -253,6 +254,7 @@ public class Bot extends ListenerAdapter {
         // Remove from the top of the queue
         db.removeSong(thisSong.getPosition());
 
+        db.addEntry("now_playing", thisSong.getName());
         // Play that song
         playURL(thisSong.getURL());
     }
