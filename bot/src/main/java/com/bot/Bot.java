@@ -219,6 +219,25 @@ public class Bot extends ListenerAdapter {
     }
 
     /**
+     * Adds a song to the database with the given youtubeID.
+     * If the queue was empty prior to this entry, start playing!
+     * 
+     * @param url YoutubeID of song to add
+     */
+    public void addSong(String url) {
+
+        // Add the song.
+        db.addSong(url);
+
+        // If the queue size is 1 after adding this, then it was 0 before.
+        // Play the song that was just added.
+        ArrayList<Song> queue = db.getSongs();
+        if (queue.size() == 1) {
+            playNext();
+        }
+    }
+
+    /**
      * Plays the song at the top of the queue, then removes the song from the queue.
      */
     public void playNext() {

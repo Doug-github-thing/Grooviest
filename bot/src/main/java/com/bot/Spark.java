@@ -54,7 +54,7 @@ public class Spark {
         // Adds audio with the given youtube ID to the queue
         post("/api/add/:url", (req, res) -> {
             String url = req.params(":url");
-            db.addSong(url);
+            bot.addSong(url);
 
             res.status(200);
             return "Attempting to add the following youtube video to the queue: " + url;
