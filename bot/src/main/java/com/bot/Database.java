@@ -82,9 +82,22 @@ public class Database {
      * @return String content of the Location variable.
      */
     public String getLocationValue() {
+        return getValue("location");
+    }
+
+    /**
+     * Checks the firebase database for the value of the specified variable.
+     * Uses CompletableFuture class to handle async aspect of database querying.
+     * 
+     * @param key The value to be queried.
+     * @return String content of the specified key variable.
+     */
+    public String getValue(String key) {
         CompletableFuture<String> future = new CompletableFuture<>();
 
-        locationRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference ref = db.getReference(key);
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 String locationValue = dataSnapshot.getValue(String.class);
