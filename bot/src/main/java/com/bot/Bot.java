@@ -14,11 +14,13 @@ import com.sedmelluq.discord.lavaplayer.player.AudioLoadResultHandler;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayerManager;
 import com.sedmelluq.discord.lavaplayer.player.DefaultAudioPlayerManager;
+import com.sedmelluq.discord.lavaplayer.source.AudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.local.LocalAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.source.youtube.YoutubeAudioSourceManager;
 import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
+import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 
 import java.io.File;
@@ -84,7 +86,7 @@ public class Bot extends ListenerAdapter {
         player = playerManager.createPlayer();
 
         // Initialize Lavaplayer functions to play sounds through the bot voice channel.
-        trackScheduler = new TrackScheduler(player);
+        trackScheduler = new TrackScheduler(player, db);
         player.addListener(trackScheduler);
     }
 
@@ -175,10 +177,10 @@ public class Bot extends ListenerAdapter {
     /**
      * Bot attempts to play the audio file specified in the filename parameter.
      * 
-     * @param filename The filename of file to play.
+     * @param url YoutubeID of the song to play.
      * @return True if performed successfully. False if not.
      */
-    public boolean playFile(String filename) {
+    public boolean playURL(String url) {
 
         // If not currently in a channel
         if (audioManager == null || !audioManager.isConnected()) {
@@ -186,14 +188,8 @@ public class Bot extends ListenerAdapter {
             return false;
         }
 
-        Logging.log(logContext, "I am supposed to try to play the file: /sounds/" + filename);
-
-        File soundFile = new File("/sounds/" + filename).getAbsoluteFile();
-
-        Logging.log(logContext, soundFile.toString());
-
         // Standin Youtube for "a"
-        playerManager.loadItem("Ku6nJjmEeaw", new AudioLoadResultHandler() {
+        playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
                 player.playTrack(track);
