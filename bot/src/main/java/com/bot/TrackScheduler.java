@@ -8,8 +8,11 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 
 public class TrackScheduler extends AudioEventAdapter {
 
-    public TrackScheduler(AudioPlayer player) {
+    private Bot bot;
+
+    public TrackScheduler(AudioPlayer player, Bot bot) {
         super();
+        this.bot = bot;
     }
 
     @Override
@@ -27,13 +30,14 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
-        Logging.log("Player", "Started new track: " + track.toString());
+        Logging.log("Player", "Started new track: " + track.getInfo());
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         if (endReason.mayStartNext) {
             Logging.log("Player", "Finished track: " + track.toString());
+            bot.playNext();
         }
 
         // endReason == FINISHED: A track finished or died by an exception (mayStartNext

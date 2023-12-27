@@ -24,6 +24,7 @@ import com.sedmelluq.discord.lavaplayer.track.AudioTrackState;
 import com.sedmelluq.discord.lavaplayer.container.MediaContainerRegistry;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * An object encapsulating Discord Bot functions according to JDA API.
@@ -86,7 +87,7 @@ public class Bot extends ListenerAdapter {
         player = playerManager.createPlayer();
 
         // Initialize Lavaplayer functions to play sounds through the bot voice channel.
-        trackScheduler = new TrackScheduler(player, db);
+        trackScheduler = new TrackScheduler(player, this);
         player.addListener(trackScheduler);
     }
 
@@ -215,5 +216,23 @@ public class Bot extends ListenerAdapter {
         });
 
         return true;
+    }
+
+    /**
+     * Plays the song at the top of the queue, then removes the song from the queue.
+     */
+    public void playNext() {
+
+        Logging.log(logContext, "Attemping to play next song in the database:");
+
+        // Get the first song off the top of the database
+        ArrayList<Song> queue = db.getSongs();
+        Song thisSong = queue.get(0);
+
+        // Remove from the top of the queue
+        db.removeSong(thisSong.getPosition());
+
+        // Play that song
+        playURL(thisSong.getURL());
     }
 }

@@ -14,6 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Collection;
 
 /**
  * Defines and controls connection to the Firebase Realtime Database.
@@ -106,69 +107,6 @@ public class Database {
     }
 
     /**
-     * Checks the database for a current list of songs.
-     * 
-     * @return An ArrayList of Song objects containing each song.
-     */
-    public ArrayList<Song> getSongs() {
-        CompletableFuture<ArrayList<Song>> futureSongs = new CompletableFuture<>();
-
-        songsRef.orderByKey().addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                // New arrayList to return.
-                ArrayList<Song> mySongs = new ArrayList<Song>();
-
-                // Reads the songs. If it's an ArrayList like it should be,
-                // sets them up to be processed as Song objects.
-                Object genericSongs = dataSnapshot.getValue();
-
-                // If the songs were not returned as an arraylist, stop checking.
-                if (!(genericSongs instanceof ArrayList))
-                    return;
-
-                // Since we now know genericSongs IS an arraylist, convert each
-                // item into a Song format.
-                ArrayList<Object> objectSongs = (ArrayList<Object>) genericSongs;
-                int songPosition = 0;
-                for (Object item : objectSongs) {
-
-                    // Assert this this is a HashMap, which it will be since the
-                    // song data is stored in a JSON Object
-                    HashMap<String, String> thisMap = (HashMap) item;
-
-                    String name = thisMap.get("name");
-                    String url = thisMap.get("url");
-                    Song thisSong = new Song(songPosition, name, url);
-                    mySongs.add(thisSong);
-                    songPosition++;
-                }
-
-                futureSongs.complete(mySongs);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Logging.log(logContext, "Error accessing songs in the database: " + databaseError.getDetails());
-                futureSongs.completeExceptionally(
-                        new RuntimeException("Error reading songs: " + databaseError.getMessage()));
-            }
-        });
-
-        // By the time the code reaches here, the songs should have been parsed
-        // to a CompletableFuture containing the ArrayList of songs.
-
-        // Use .get() to complete the Future list and return
-        try {
-            return futureSongs.get();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ArrayList<Song>();
-    }
-
-    /**
      * Change the value of Location in the database to the specified String.
      * 
      * @param newValue New String value with which to replace the old value.
@@ -229,15 +167,110 @@ public class Database {
     }
 
     /**
-     * Given a queue position, attempts to remove the song at that position.
+     * Attempts to remove the song at a given position.
      * 
-     * @param position The queue position of the song to be removed
+     * @param position The position of the song to be removed.
      */
     public void removeSong(int position) {
-
-        DatabaseReference deleteSongRef = db.getReference("songs/" + position);
         Logging.log(logContext, "Deleting song at position " + position);
+        DatabaseReference deleteSongRef = db.getReference("songs/" + position);
         deleteSongRef.removeValueAsync();
+    }
+
+    /**
+     * Checks the database for a current list of songs.
+     * 
+     * @return An ArrayList of Song objects containing each song.
+     */
+    public ArrayList<Song> getSongs() {
+        CompletableFuture<ArrayList<Song>> futureSongs = new CompletableFuture<>();
+
+        songsRef.orderByChild("position").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                // New arrayList to return.
+                ArrayList<Song> mySongs = new ArrayList<Song>();
+
+                // Reads the songs. If it's an ArrayList like it should be,
+                // sets them up to be processed as Song objects.
+                Object genericSongs = dataSnapshot.getValue();
+
+                // Songs should be returned as an ArrayList or a HashMap.
+                // If ArrayList:
+                if (genericSongs instanceof ArrayList) {
+                    // Since we now know genericSongs IS an arraylist, convert each
+                    // item into a Song format.
+                    ArrayList<Object> objectSongs = (ArrayList<Object>) genericSongs;
+
+                    for (Object item : objectSongs) {
+
+                        // There can be gaps in the "position" numbers.
+                        // Ignore those when considering what songs are in the queue.
+                        if (item == null)
+                            continue;
+
+                        // Assert this this is a HashMap, which it will be since the
+                        // song data is stored in a JSON Object
+                        HashMap<String, Object> thisMap = (HashMap) item;
+                        String name = (String) thisMap.get("name");
+                        String url = (String) thisMap.get("url");
+
+                        String stringPosition = thisMap.get("position").toString();
+                        int position = Integer.parseInt(stringPosition);
+
+                        Song thisSong = new Song(position, name, url);
+                        mySongs.add(thisSong);
+                    }
+                }
+                // If genericSongs were returned as a map instead of a list
+                else if (genericSongs instanceof HashMap) {
+                    // Since we know it's a hashmap of hashmaps, make it an arrayList instead!
+                    Collection<Object> songsMapCollection = ((HashMap) genericSongs).values();
+                    ArrayList<Object> objectSongs = new ArrayList<>(songsMapCollection);
+
+                    for (Object item : objectSongs) {
+
+                        // There can be gaps in the "position" numbers.
+                        // Ignore those when considering what songs are in the queue.
+                        if (item == null)
+                            continue;
+
+                        // Assert this this is a HashMap, which it will be since the
+                        // song data is stored in a JSON Object
+                        HashMap<String, Object> thisMap = (HashMap) item;
+                        String name = (String) thisMap.get("name");
+                        String url = (String) thisMap.get("url");
+
+                        String stringPosition = thisMap.get("position").toString();
+                        int position = Integer.parseInt(stringPosition);
+
+                        Song thisSong = new Song(position, name, url);
+                        mySongs.add(thisSong);
+                    }
+                }
+
+                futureSongs.complete(mySongs);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Logging.log(logContext, "Error accessing songs in the database: " + databaseError.getDetails());
+                futureSongs.completeExceptionally(
+                        new RuntimeException("Error reading songs: " + databaseError.getMessage()));
+            }
+        });
+
+        // By the time the code reaches here, the songs should have been parsed
+        // to a CompletableFuture containing the ArrayList of songs.
+
+        // Use .get() to complete the Future list and return
+        try {
+            return futureSongs.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<Song>();
     }
 
 }
