@@ -149,12 +149,16 @@ public class Database {
      */
     public void addSong(String url) {
 
+        // Query the Youtube API to get the song name
+        String name = YoutubeAPI.getVideoName(url);
+
         // Figure out what position value to assign to this song by getting a list of
         // all songs, and counting how many there are.
         int position = getSongs().size();
         DatabaseReference newSongRef = db.getReference("songs/" + position);
 
-        Song newSong = new Song(position, "placeholderName", url);
+        // Create the new song object to add.
+        Song newSong = new Song(position, name, url);
 
         newSongRef.setValue(newSong, (databaseError, databaseReference) -> {
             if (databaseError == null) {
