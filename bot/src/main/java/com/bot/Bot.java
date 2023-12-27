@@ -223,11 +223,16 @@ public class Bot extends ListenerAdapter {
      */
     public void playNext() {
 
-        Logging.log(logContext, "Attemping to play next song in the database:");
-
         // Get the first song off the top of the database
         ArrayList<Song> queue = db.getSongs();
+        if (queue.size() == 0) {
+            Logging.log(logContext, "Reached end of queue");
+            return;
+        }
+
         Song thisSong = queue.get(0);
+
+        Logging.log(logContext, "Attemping to play next song in the database: " + thisSong.getName());
 
         // Remove from the top of the queue
         db.removeSong(thisSong.getPosition());
