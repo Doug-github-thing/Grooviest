@@ -217,30 +217,20 @@ public class Bot extends ListenerAdapter {
 
     /**
      * Adds a song to the database with the given youtubeID.
-     * If the queue was empty prior to this entry, start playing!
+     * If the queue was empty prior to this entry, and the bot is not
+     * already playing something, start playing now!
      * 
      * @param url YoutubeID of song to add
      */
     public void addSong(String url) {
 
-        // Add the song.
+        // Add the song the the queue.
         db.addSong(url);
 
-        // If not currently playing, and the queue was empty before adding this song,
-        // Start playing.
-
-        // Check if you're currently playing something.
-        // If so, do not play this new song immediately.
+        // If not already playing something, then start now.
         String nowPlaying = db.getValue("now_playing");
-        if (nowPlaying != null && nowPlaying != "")
-            return;
-
-        // If the queue size is 1 after adding this, then it was 0 before.
-        // Play the song that was just added.
-        // ArrayList<Song> queue = db.getSongs();
-        // if (queue.size() == 1) {
-        playNext();
-        // }
+        if (nowPlaying == null || nowPlaying.length() == 0)
+            playNext();
     }
 
     /**
@@ -255,7 +245,6 @@ public class Bot extends ListenerAdapter {
             db.addEntry("now_playing", "");
             return;
         }
-
         Song thisSong = queue.get(0);
 
         Logging.log(logContext, "Attemping to play next song in the database: " + thisSong.getName());
@@ -263,6 +252,7 @@ public class Bot extends ListenerAdapter {
         // Remove from the top of the queue
         db.removeSong(thisSong.getPosition());
 
+        // Update Now Playing to track the current song
         db.addEntry("now_playing", thisSong.getName());
         // Play that song
         playURL(thisSong.getURL());
