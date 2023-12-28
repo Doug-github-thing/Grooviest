@@ -229,7 +229,7 @@ public class Bot extends ListenerAdapter {
         // Check if you're currently playing something.
         // If so, do not play this new song immediately.
         String nowPlaying = db.getValue("now_playing");
-        if (nowPlaying == null || nowPlaying == "")
+        if (nowPlaying != null && nowPlaying != "")
             return;
 
         // We now know the bot is not currently playing anything.
