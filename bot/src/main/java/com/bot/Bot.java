@@ -151,6 +151,12 @@ public class Bot extends ListenerAdapter {
             case "leave":
                 leave();
                 break;
+            case "pause":
+                pause();
+                break;
+            case "play":
+                play();
+                break;
             default:
                 break;
         }
@@ -159,17 +165,38 @@ public class Bot extends ListenerAdapter {
     /**
      * Bot attempts to join the currently selected audio channel.
      */
-    public void join() {
-        Logging.log(logContext, "Attempting to join the channel");
+    private void join() {
+        Logging.log(logContext, "Joining the channel");
         audioManager.openAudioConnection(audioChannel);
     }
 
     /**
      * Bot attempts to disconnect from the current audio channel.
      */
-    public void leave() {
-        Logging.log(logContext, "Attempting to leave the channel");
+    private void leave() {
+        Logging.log(logContext, "Leaving the channel");
         audioManager.closeAudioConnection();
+    }
+
+    /**
+     * Bot attempts to pause playback.
+     */
+    private void pause() {
+        Logging.log(logContext, "Pausing playback");
+        player.setPaused(true);
+    }
+
+    /**
+     * Bot attempts to resume playback if paused.
+     * If not paused, plays next song.
+     */
+    private void play() {
+        if (player.isPaused()) {
+            Logging.log(logContext, "Resuming playback");
+            player.setPaused(false);
+            return;
+        }
+        playNext();
     }
 
     /**
