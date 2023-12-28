@@ -86,6 +86,10 @@ public class Bot extends ListenerAdapter {
         // Initialize Lavaplayer functions to play sounds through the bot voice channel.
         trackScheduler = new TrackScheduler(player, this, db);
         player.addListener(trackScheduler);
+
+        // Since the bot can't start paused or connected
+        db.addEntry("paused", "false");
+        db.addEntry("location", "");
     }
 
     // Callback when a message is received
@@ -280,7 +284,9 @@ public class Bot extends ListenerAdapter {
         ArrayList<Song> queue = db.getSongs();
         if (queue.size() == 0) {
             Logging.log(logContext, "Reached end of queue");
+            player.stopTrack();
             db.addEntry("now_playing", "");
+            db.addEntry("paused", "false");
             return;
         }
         Song thisSong = queue.get(0);

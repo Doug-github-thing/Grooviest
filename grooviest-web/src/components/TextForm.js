@@ -21,6 +21,7 @@ const TextForm = ({ label }) => {
 
     return (
         <div>
+            {/* Search bar */}
             <form onSubmit={handleSubmit}>
                 <label>
                     {label}
@@ -30,7 +31,8 @@ const TextForm = ({ label }) => {
                 <input type="submit" value="Search" />
             </form>
 
-            {searchResults == null ? <></> : 
+            {/* Search Results */}
+            {searchResults == null ? <></> :
             searchResults.map((video, index) => (
                 <div className="video-wrapper" key={index}>
                     <div className="id">

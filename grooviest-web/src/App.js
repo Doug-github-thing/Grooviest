@@ -8,17 +8,18 @@ import Queue from './components/Queue';
 const App = () => {
 
     return (
-      <div className="app">
+        <div className="app">
 
-          <Header title="Groovy Web App" />
-          <TextForm label="Add song ID"/>
+            <Header title="Groovy Web App" />
 
-          <div>
-              <Soundboard className="column" />
-              <Queue className="column" />
-          </div>
+            <TextForm className="column" label="Add song"/>
+            
+            <div>
+                {/* <Soundboard className="column" /> */}
+                <Queue className="column" />
+            </div>
       
-      </div>
+        </div>
     );
 }
 
