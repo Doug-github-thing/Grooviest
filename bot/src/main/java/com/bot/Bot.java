@@ -87,9 +87,23 @@ public class Bot extends ListenerAdapter {
         trackScheduler = new TrackScheduler(player, this, db);
         player.addListener(trackScheduler);
 
-        // Since the bot can't start paused or connected
+        // Reset state variables in the database on startup
         db.addEntry("paused", "false");
         db.addEntry("location", "");
+        db.addEntry("now_playing", "");
+        db.addEntry("bot_online", "true");
+
+        // Add a shutdown hook
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            // Code to run when the JVM is about to shut down
+            Logging.log(logContext, "Bot Shutting down...");
+
+            // Reset state variables in the database on shutdown
+            db.addEntry("paused", "false");
+            db.addEntry("location", "");
+            db.addEntry("now_playing", "");
+            db.addEntry("bot_online", "false");
+        }));
     }
 
     // Callback when a message is received
