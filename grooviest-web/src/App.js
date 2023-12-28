@@ -1,7 +1,7 @@
 import './App.css';
 import './api/Database.js';
 import Header from './components/Header';
-import TextForm from './components/TextForm.js';
+import SearchBar from './components/SearchBar.js';
 import Soundboard from './components/Soundboard';
 import Queue from './components/Queue';
 
@@ -12,7 +12,7 @@ const App = () => {
 
             <Header title="Groovy Web App" />
 
-            <TextForm className="column" label="Add song"/>
+            <SearchBar className="column" label="Add song"/>
             
             <div>
                 {/* <Soundboard className="column" /> */}

@@ -19,6 +19,13 @@ const TextForm = ({ label }) => {
         setSearchTerms(""); // Clear search terms once searched
     }
 
+    // Called when "add song" button is pressed
+    const addSongCallback = (command) => {
+        console.log("callback called!: ", command);
+        API.sendCommand(command);
+        setSearchResults(null);
+    }
+
     return (
         <div>
             {/* Search bar */}
@@ -39,7 +46,7 @@ const TextForm = ({ label }) => {
                         <div className="name">Name: {video.snippet.title}</div>
                         <div className="url">channel: {video.snippet.channelTitle}</div>
                     </div>
-                    <CommandButton className="button" text="+" command={`add/${video.id.videoId}`}/>
+                    <button onClick={() => { addSongCallback(video.snippet.id) }}>+</button>
                 </div>
             ))}
         </div>
