@@ -84,7 +84,7 @@ public class Bot extends ListenerAdapter {
         player = playerManager.createPlayer();
 
         // Initialize Lavaplayer functions to play sounds through the bot voice channel.
-        trackScheduler = new TrackScheduler(player, this);
+        trackScheduler = new TrackScheduler(player, this, db);
         player.addListener(trackScheduler);
     }
 
@@ -157,6 +157,9 @@ public class Bot extends ListenerAdapter {
             case "play":
                 play();
                 break;
+            case "skip":
+                skip();
+                break;
             default:
                 break;
         }
@@ -182,20 +185,28 @@ public class Bot extends ListenerAdapter {
      * Bot attempts to pause playback.
      */
     private void pause() {
-        Logging.log(logContext, "Pausing playback");
         player.setPaused(true);
     }
 
     /**
-     * Bot attempts to resume playback if paused.
-     * If not paused, plays next song.
+     * Bot attempts to resume playback. If already playing, does nothing.
+     * If paused, resumes playback. If not paused and not playing, plays next song.
      */
     private void play() {
         if (player.isPaused()) {
-            Logging.log(logContext, "Resuming playback");
             player.setPaused(false);
             return;
         }
+
+        String nowPlaying = db.getValue("now_playing");
+        if (nowPlaying == null || nowPlaying.length() == 0)
+            playNext();
+    }
+
+    /**
+     * Skips the currently playing song.
+     */
+    private void skip() {
         playNext();
     }
 
