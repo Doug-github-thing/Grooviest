@@ -14,12 +14,14 @@ const TextForm = ({ label }) => {
         event.preventDefault(); // Do not refresh the page
 
         const searchResults = await API.youtubeSearch(searchTerms);
+        console.log("Search resutls: ", searchResults.items);
         setSearchResults(searchResults.items); 
 
         setSearchTerms(""); // Clear search terms once searched
     }
 
-    // Called when "add song" button is pressed
+    // Called when "add song" button is pressed.
+    // Removes search results from the screen.
     const addSongCallback = (command) => {
         API.sendCommand("add/" + command);
         setSearchResults(null);
@@ -41,6 +43,7 @@ const TextForm = ({ label }) => {
             {searchResults == null ? <></> :
             searchResults.map((video, index) => (
                 <div className="video-wrapper" key={index}>
+                    <img className="thumbnail" src={video.snippet.thumbnails.default.url} />
                     <div className="id">
                         <div className="name">Name: {video.snippet.title}</div>
                         <div className="url">channel: {video.snippet.channelTitle}</div>

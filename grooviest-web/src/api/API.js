@@ -23,11 +23,29 @@ export default class API {
     }
 
     static youtubeSearch = async (terms) => {
+        return await this.getYoutubeVideoResults(terms);
+    }
+
+    static getYoutubeVideoResults = async (terms) => {
         const base = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
         const search = `&q=${encodeURIComponent(terms)}`;
         const key= `&key=${this.youtube_api_key}`;
 
         const resource = base + search + key;
+
+        return await fetch(resource, {
+            method: "GET"
+        }).then(res => {
+            return res.json();
+        });
+    }
+
+    static getYoutubeVideoDuration = async (terms) => {
+        const base = "https://www.googleapis.com/youtube/v3/search?part=contentDetails";
+        const videoId = `&id=${videoId}`;
+        const key= `&key=${this.youtube_api_key}`;
+
+        const resource = base + videoId + key;
 
         return await fetch(resource, {
             method: "GET"

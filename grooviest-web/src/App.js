@@ -2,7 +2,6 @@ import './App.css';
 import './api/Database.js';
 import Header from './components/Header';
 import SearchBar from './components/SearchBar.js';
-import Soundboard from './components/Soundboard';
 import Queue from './components/Queue';
 
 const App = () => {
