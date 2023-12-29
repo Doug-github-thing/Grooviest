@@ -21,8 +21,7 @@ const TextForm = ({ label }) => {
 
     // Called when "add song" button is pressed
     const addSongCallback = (command) => {
-        console.log("callback called!: ", command);
-        API.sendCommand(command);
+        API.sendCommand("add/" + command);
         setSearchResults(null);
     }
 
@@ -46,7 +45,7 @@ const TextForm = ({ label }) => {
                         <div className="name">Name: {video.snippet.title}</div>
                         <div className="url">channel: {video.snippet.channelTitle}</div>
                     </div>
-                    <button onClick={() => { addSongCallback(video.snippet.id) }}>+</button>
+                    <button onClick={() => { addSongCallback(video.id.videoId) }}>+</button>
                 </div>
             ))}
         </div>
