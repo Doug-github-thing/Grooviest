@@ -17,7 +17,6 @@ const Queue = ({ className }) => {
         const query = ref(db, "songs");
         return onValue(query, (snapshot) => {
             const data = snapshot.val();
-            console.log(snapshot.toJSON());
   
             if (snapshot.exists()) {
                 const newSongs = Object.values(data);
