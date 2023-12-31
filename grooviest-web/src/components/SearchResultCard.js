@@ -6,7 +6,7 @@ import "./Card.css";
  * Formats a Youtube search result, passed as an object with the form:
  * {
  *      "id": youtubeID,
- *      "title": title,
+ *      "name": name,
  *      "channel": channel name,
  *      "thumbnail": link to thumbnail,
  *      "duration": duration

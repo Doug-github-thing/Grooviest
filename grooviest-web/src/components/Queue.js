@@ -2,9 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
 
-// For displaying buttons
-import CommandButton from "./CommandButton";
-
+import QueueCard from "./QueueCard";
 import "./Queue.css";
 
 const Queue = ({ className }) => {
@@ -21,7 +19,8 @@ const Queue = ({ className }) => {
         const query = ref(db, "songs");
         return onValue(query, (snapshot) => {
             const data = snapshot.val();
-            snapshot.exists() ? setSongs(Object.values(data)) : setSongs();    
+            snapshot.exists() ? setSongs(Object.values(data)) : setSongs();
+            console.log(songs);
         });
     }, []);
 
@@ -30,16 +29,9 @@ const Queue = ({ className }) => {
         <div className={className}>
             <h2>Queue</h2>
             <div>
-                {songs == null ? <></> :
+                {songs == null ? <>The queue is empty</> :
                     songs.map((song, index) => (
-
-                        <div className="song-wrapper" key={index}>
-                            <div className="id">
-                                <div className="name">Name: {song.name}</div>
-                                <div className="url">URL: {song.url}</div>
-                            </div>
-                            <CommandButton className="button" text="-" command={`remove/${song.position}`}/>
-                        </div>
+                        <QueueCard key={index} song={song} index={index} />
                     ))}
             </div>
         </div>
