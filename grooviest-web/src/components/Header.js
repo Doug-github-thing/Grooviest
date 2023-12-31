@@ -16,25 +16,28 @@ const Header = ({ title }) => {
     // For tracking paused status
     const [paused, setPaused] = useState("");
 
-    const db = getDatabase();
-
+    
     useEffect(() => {
-        const query = ref(db, "bot_online");
+        const myDatabase = getDatabase();
+        const query = ref(myDatabase, "bot_online");
         return onValue( query, (snapshot) => setOnlineStatus(snapshot.val()) );
     }, []);
 
     useEffect(() => {
-        const query = ref(db, "location");
+        const myDatabase = getDatabase();
+        const query = ref(myDatabase, "location");
         return onValue( query, (snapshot) => setChannel(snapshot.val()) );
       }, []);
 
     useEffect(() => {
-        const query = ref(db, "now_playing");
+        const myDatabase = getDatabase();
+        const query = ref(myDatabase, "now_playing");
         return onValue( query, (snapshot) => setPlaying(snapshot.val()) );
     }, []);
 
     useEffect(() => {
-        const query = ref(db, "paused");
+        const myDatabase = getDatabase();
+        const query = ref(myDatabase, "paused");
         return onValue( query, (snapshot) => setPaused(snapshot.val()) );
     }, []);
 
@@ -43,7 +46,7 @@ const Header = ({ title }) => {
             <h1>{title}</h1>
 
             <h4 className="online-status">
-                {onlineStatus != "true" ?
+                {onlineStatus !== "true" ?
                 <>The bot is offline</>
                 :
                 <>
@@ -60,7 +63,7 @@ const Header = ({ title }) => {
                         <>Not currently playing</>
                         :
                             // Check if it's paused
-                            (paused != "true") ?
+                            (paused !=="true") ?
                             <>Now playing: {playing}</> 
                             :
                             <>PAUSED: {playing}</>
