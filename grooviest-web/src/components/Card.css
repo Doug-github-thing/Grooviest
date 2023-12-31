@@ -1,0 +1,37 @@
+.search-result-card {
+    margin: 1vmin 5vmin;
+    display: flex;
+    justify-content: space-between;
+}
+
+#odd { background-color: #424549; }
+#even { background-color: #36393e; }
+
+.left-align-wrapper { display: flex; }
+
+.left-align-wrapper .id-wrapper {
+    margin-left: 1vmin;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.left-align-wrapper .id-wrapper .name {
+    font-size: x-large;
+    align-self: flex-start;
+}
+
+.left-align-wrapper .id-wrapper .channel {
+    font-weight: 150;
+    position: absolute;
+    bottom: 0.5vmin;
+}
+
+.search-result-card button {
+    height: min-content;
+    align-self: center;
+}
+
+.search-result-card:hover { box-shadow: 0.5vmin 0.5vmin rgba(0,0,0,0.2); }
+

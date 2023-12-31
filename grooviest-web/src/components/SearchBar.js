@@ -70,8 +70,11 @@ const SearchBar = ({ label }) => {
             {searchResults == null ? <></> :
                 searchResults.length === 0 ? <>No Search Results</> :
                     searchResults.map((result, index) => (
-                        <SearchResultCard key={index} result={result} removeSearchResultsCallback={setSearchResults}/>
-                    ))}
+                        <SearchResultCard key={index}
+                            result={result} 
+                            removeSearchResultsCallback={setSearchResults}
+                            index={index} />
+            ))}
         </div>
     );
 };
