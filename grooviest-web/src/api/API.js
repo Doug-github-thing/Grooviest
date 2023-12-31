@@ -26,6 +26,12 @@ export default class API {
         return await this.getYoutubeVideoResults(terms);
     }
 
+    /**
+     * Given youtube video search terms, returns the object returned from a call to the youtube search API
+     * in the form: https://developers.google.com/youtube/v3/docs/search#resource
+     * @param {*} terms Search terms used to search for videos
+     * @returns Youtube search API result
+     */
     static getYoutubeVideoResults = async (terms) => {
         const base = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
         const search = `&q=${encodeURIComponent(terms)}`;
@@ -40,9 +46,14 @@ export default class API {
         });
     }
 
-    static getYoutubeVideoDuration = async (terms) => {
+    /**
+     * Given a YoutubeID, for a video, returns the video duration as a String
+     * @param {String} youtubeID YoutubeID of the video
+     * @returns Video duration as a String
+     */
+    static getYoutubeVideoDuration = async (youtubeID) => {
         const base = "https://www.googleapis.com/youtube/v3/search?part=contentDetails";
-        const videoId = `&id=${videoId}`;
+        const videoId = `&id=${youtubeID}`;
         const key= `&key=${this.youtube_api_key}`;
 
         const resource = base + videoId + key;
