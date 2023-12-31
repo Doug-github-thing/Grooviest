@@ -26,8 +26,8 @@ const SearchResultCard = ({result, removeSearchResultsCallback}) => {
         <div className="search-result-card">
             
             <img className="thumbnail" src={result.thumbnail} />
-            <div className="name">Name: {result.title}</div>
-            <div className="url">channel: {result.channel}</div>
+            <div className="name">Name: {result.name}</div>
+            <div className="url" alt="thumbnail">channel: {result.channel}</div>
             <button onClick={() => { addSongCallback(result.id) }}>+</button>
 
         </div>
