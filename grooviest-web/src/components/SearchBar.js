@@ -2,7 +2,6 @@ import { useState } from "react";
 
 // To send commands to the bot API.
 import API from "../api/API";
-import CommandButton from "./CommandButton";
 import SearchResultCard from "./SearchResultCard";
 
 const SearchBar = ({ label }) => {
@@ -26,8 +25,9 @@ const SearchBar = ({ label }) => {
         // Check if response has expected shape. If not, return
         if (!rawSearchResults.hasOwnProperty("pageInfo") 
             || !rawSearchResults.pageInfo.hasOwnProperty("resultsPerPage")) {
-            setSearchResults(null);
-            return;
+                console.error("Error performing search. Results: ", rawSearchResults);
+                setSearchResults(null);
+                return;
         }
         
         // Find how many results there are
@@ -51,13 +51,6 @@ const SearchBar = ({ label }) => {
         setSearchTerms("");
     }
 
-    // Called when "add song" button is pressed.
-    // Removes search results from the screen.
-    const addSongCallback = (command) => {
-        API.sendCommand("add/" + command);
-        setSearchResults(null);
-    }
-
     return (
         <div>
             {/* Search bar */}
@@ -70,19 +63,12 @@ const SearchBar = ({ label }) => {
                 <input type="submit" value="Search" />
             </form>
 
-            {/* Search Results */}
+            {/* Search Results list */}
             {searchResults == null ? <></> :
-            searchResults.map((result, index) => (
-                <SearchResultCard result={result} removeSearchResultsCallback={setSearchResults}/>
-                // <div className="video-wrapper" key={index}>
-                //     <img className="thumbnail" src={video.snippet.thumbnails.default.url} />
-                //     <div className="id">
-                //         <div className="name">Name: {video.snippet.title}</div>
-                //         <div className="url">channel: {video.snippet.channelTitle}</div>
-                //     </div>
-                //     <button onClick={() => { addSongCallback(video.id.videoId) }}>+</button>
-                // </div>
-            ))}
+                searchResults.length === 0 ? <>No Search Results</> :
+                    searchResults.map((result, index) => (
+                        <SearchResultCard key={index} result={result} removeSearchResultsCallback={setSearchResults}/>
+                    ))}
         </div>
     );
 };

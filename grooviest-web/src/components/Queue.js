@@ -9,11 +9,10 @@ import "./Queue.css";
 
 const Queue = ({ className }) => {
 
-    const db = getDatabase();
-
     const [songs, setSongs] = useState([]);
 
     useEffect(() => {
+        const db = getDatabase();
         const query = ref(db, "songs");
         return onValue(query, (snapshot) => {
             const data = snapshot.val();
@@ -32,7 +31,6 @@ const Queue = ({ className }) => {
                 {songs.map((song, index) => (
 
                     <div className="song-wrapper" key={index}>
-                        {/* <div className="index"> {index + 1} </div> */}
                         <div className="id">
                             <div className="name">Name: {song.name}</div>
                             <div className="url">URL: {song.url}</div>
