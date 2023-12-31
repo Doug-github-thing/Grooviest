@@ -12,7 +12,7 @@ const App = () => {
             <Header title="Groovy Web App" />
                 
             <div>
-                <SearchBar className="column" />
+                <SearchBar className="column" label="Search a song to add"/>
                 <Queue className="column" />
             </div>
       
