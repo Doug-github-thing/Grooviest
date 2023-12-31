@@ -1,8 +1,8 @@
 import './App.css';
 import './api/Database.js';
 import Header from './components/Header';
-import SearchBar from './components/SearchBar.js';
 import Queue from './components/Queue';
+import SearchBar from './components/SearchBar.js';
 
 const App = () => {
 
@@ -10,11 +10,9 @@ const App = () => {
         <div className="app">
 
             <Header title="Groovy Web App" />
-
-            <SearchBar className="column" label="Add song"/>
-            
+                
             <div>
-                {/* <Soundboard className="column" /> */}
+                <SearchBar className="column" />
                 <Queue className="column" />
             </div>
       

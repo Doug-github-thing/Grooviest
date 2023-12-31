@@ -4,7 +4,7 @@ import { useState } from "react";
 import API from "../api/API";
 import SearchResultCard from "./SearchResultCard";
 
-const SearchBar = ({ label }) => {
+const SearchBar = ({ label, className }) => {
 
     
     // The String search terms used.
@@ -55,7 +55,8 @@ const SearchBar = ({ label }) => {
 
 
     return (
-        <div>
+        <a className={className}>
+            <h2>Add Songs</h2>
             {/* Search bar */}
             <form onSubmit={handleVideoSearch}>
                 <label>
@@ -75,7 +76,7 @@ const SearchBar = ({ label }) => {
                             removeSearchResultsCallback={setSearchResults}
                             index={index} />
             ))}
-        </div>
+        </a>
     );
 };
 
