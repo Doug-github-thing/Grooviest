@@ -6,11 +6,13 @@ import SearchResultCard from "./SearchResultCard";
 
 const SearchBar = ({ label }) => {
 
+    
     // The String search terms used.
     const [searchTerms, setSearchTerms] = useState("");
     // Search Results expected to be the form of an Array of search result objects,
     // which contain video metadata. Null if there is an error, empty Array if 0 results.
     const [searchResults, setSearchResults] = useState(null);
+
 
     /**
      * When the search button is pressed, query YoutubeAPI, and handle parsing their
@@ -51,6 +53,7 @@ const SearchBar = ({ label }) => {
         setSearchTerms("");
     }
 
+
     return (
         <div>
             {/* Search bar */}
@@ -60,7 +63,7 @@ const SearchBar = ({ label }) => {
                     <input type="text" name="youtube" value={searchTerms}
                         onChange={(e) => setSearchTerms(e.target.value)} />
                 </label>
-                <input type="submit" value="Search" />
+                <input type="button" value="Clear" onClick={() => setSearchResults()} />
             </form>
 
             {/* Search Results list */}
