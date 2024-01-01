@@ -1,7 +1,8 @@
-.search-result-card {
+.song-card {
     margin: 1vmin 5vmin;
     display: flex;
     justify-content: space-between;
+    border-radius: 2vmin;
 }
 
 #odd { background-color: #424549; }
@@ -28,10 +29,17 @@
     bottom: 0.5vmin;
 }
 
-.search-result-card button {
+.song-card button {
     height: min-content;
     align-self: center;
+    position: relative;
+    right: 1vmin;
 }
 
-.search-result-card:hover { box-shadow: 0.5vmin 0.5vmin rgba(0,0,0,0.2); }
+.song-card:hover { box-shadow: 0.5vmin 0.5vmin rgba(0,0,0,0.2); }
 
+.now-playing-card { box-shadow: 0.5vmin 0.5vmin rgba(0,0,0,0.2); }
+
+.now-playing-card .playback-buttons {
+    display: flex;
+}

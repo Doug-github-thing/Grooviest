@@ -33,7 +33,7 @@ const SearchResultCard = ({result, removeSearchResultsCallback, index}) => {
 
     
     return (
-        <div id={identifier} className={"search-result-card"}>
+        <div id={identifier} className={"song-card"}>
  
             <div className="left-align-wrapper">
                 <img className="thumbnail" src={result.thumbnail} alt="thumbnail" width="120" height="90"/>

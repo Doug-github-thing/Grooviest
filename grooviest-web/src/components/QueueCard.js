@@ -21,7 +21,7 @@ const QueueCard = ({song, index}) => {
 
     
     return (
-        <div id={identifier} className={"search-result-card"}>
+        <div id={identifier} className={"song-card"}>
  
             <div className="left-align-wrapper">
                 <img className="thumbnail" src={song.thumbnail} alt="thumbnail" width="120" height="90"/>

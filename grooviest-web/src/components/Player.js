@@ -37,14 +37,11 @@ const Player = () => {
                         <h2>PAUSED</h2>
                             :
                         <h2>Now Playing</h2>}
-                      
-            <CommandButton text="&#9658;" command="play" />
-            <CommandButton className="fa fa-pause" text="| |" command="pause" />
         
             <div className="now-playing">
                 { // Check if the player is playing anything
                 (playing != null) ? 
-                    <NowPlayingCard song={playing} index={0} /> : <></>
+                    <NowPlayingCard song={playing} paused={paused} /> : <></>
                 }
             </div>
         </>

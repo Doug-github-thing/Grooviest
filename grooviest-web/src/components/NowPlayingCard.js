@@ -12,16 +12,11 @@ import "./Card.css";
  * @param {YoutubeSearchResultItem} song The song object formatted as specified above
  * @param {integer} index Which number in the list this item corresponds to. Used for alternating colors.
  */
-const NowPlayingCard = ({song, index}) => {
-
-    /**
-     * Either "odd" or "even" depending on where the card is in the list.
-     */
-    const identifier = (index % 2 === 1) ? "even" : "odd";
+const NowPlayingCard = ({song, paused}) => {
 
     
     return (
-        <div id={identifier} className={"search-result-card"}>
+        <div id="odd" className={"song-card now-playing-card"}>
  
             <div className="left-align-wrapper">
                 <img className="thumbnail" src={song.thumbnail} alt="thumbnail" width="120" height="90"/>
@@ -30,7 +25,17 @@ const NowPlayingCard = ({song, index}) => {
                     <div className="channel">{song.channel}</div>
                 </div>
             </div>
-            <CommandButton text="skip" command="skip" />
+
+            <div className="playback-buttons">
+
+                {paused == "false" ? 
+                    <CommandButton text="| |" command="pause" /> 
+                        :
+                    <CommandButton text="&#9658;" command="play" />
+                }
+
+                <CommandButton text="skip" command="skip" />
+            </div>
         </div>
     )
 }
