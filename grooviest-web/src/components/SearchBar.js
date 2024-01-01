@@ -55,7 +55,7 @@ const SearchBar = ({ label, className }) => {
 
 
     return (
-        <a className={className}>
+        <div className={className}>
             <h2>Add Songs</h2>
             {/* Search bar */}
             <form onSubmit={handleVideoSearch}>
@@ -76,7 +76,7 @@ const SearchBar = ({ label, className }) => {
                             removeSearchResultsCallback={setSearchResults}
                             index={index} />
             ))}
-        </a>
+        </div>
     );
 };
 
