@@ -3,10 +3,13 @@ package com.bot;
 /**
  * Holds information pertaining to a single song as it sits in the database.
  * Songs are stored in the database as:
- * songs
- * __|-- # // Position in queue, starting from 0
- * __|___|-- name: <String name> // Human readable identification
- * __|___|-- url: <String url> // Youtube ID of song, ie "q4vy7BcAVJg"
+ * "songs"
+ * _ |-- "#" // Position in queue, starting from 0
+ * _ | _ |-- "position": <int position> // Same as the name of the object above
+ * _ | _ |-- "name": <String name> // Human readable identification
+ * _ | _ |-- "url": <String url> // Youtube ID of song, ie "q4vy7BcAVJg"
+ * _ | _ |-- "channel": <String channelName> // Channel name of uploader
+ * _ | _ |-- "thumnail": <String url> // URL link to video thumbnail
  */
 public class Song {
 
@@ -26,16 +29,28 @@ public class Song {
     private String url;
 
     /**
+     * @return Name of the channel which uploaded the video.
+     */
+    public String channel;
+
+    /**
+     * URL link to thumbnail image
+     */
+    private String thumbnail;
+
+    /**
      * Initializes a new song with a position in queue, name, and url.
      * 
      * @param position Position in queue for this new song, ie 3
      * @param name     Name of this new song, ie "10 hours of Without Cosby"
      * @param url      Youtube ID of this new song, ie "q4vy7BcAVJg"
      */
-    public Song(int position, String name, String url) {
+    public Song(int position, String name, String channel, String url) {
         this.position = position;
         this.name = name;
         this.url = url;
+        this.channel = channel;
+        this.thumbnail = "https://i.ytimg.com/vi/" + url + "/default.jpg";
     }
 
     /**
@@ -46,6 +61,8 @@ public class Song {
         this.position = -1;
         this.name = null;
         this.url = null;
+        this.channel = null;
+        this.thumbnail = null;
     }
 
     /**
@@ -70,19 +87,17 @@ public class Song {
     }
 
     /**
-     * Changes song's position to the indicated new position.
-     * 
-     * @param position
+     * @return Name of the channel which uploaded the video.
      */
-    public void changePosition(int position) {
-        this.position = position;
+    public String getChannel() {
+        return this.channel;
     }
 
     /**
-     * Moves the song's position in the queue by 1 (decrements position).
+     * @return URL link to the video's thumbnail.
      */
-    public void advance() {
-        this.position--;
+    public String getThumbnail() {
+        return this.thumbnail;
     }
 
     /**
