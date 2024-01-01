@@ -235,15 +235,9 @@ public class Bot extends ListenerAdapter {
      * @param url YoutubeID of the song to play.
      * @return True if performed successfully. False if not.
      */
-    public boolean playURL(String url) {
+    public void playURL(String url) {
 
-        // If not currently in a channel
-        if (audioManager == null || !audioManager.isConnected()) {
-            Logging.log(logContext, "Not connected to a channel!");
-            return false;
-        }
-
-        // Standin Youtube for "a"
+        // Add a song to the player
         playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
@@ -252,10 +246,6 @@ public class Bot extends ListenerAdapter {
 
             @Override
             public void playlistLoaded(AudioPlaylist playlist) {
-                // for (AudioTrack track : playlist.getTracks()) {
-                // Logging.log("TODO", "Implement AudioLoadResultHandler playlistLoaded");
-                // // trackScheduler.queue(track);
-                // }
             }
 
             @Override
@@ -268,8 +258,6 @@ public class Bot extends ListenerAdapter {
                 // Notify the user that everything exploded
             }
         });
-
-        return true;
     }
 
     /**
@@ -295,7 +283,15 @@ public class Bot extends ListenerAdapter {
      */
     public void playNext() {
 
-        // Get the first song off the top of the database
+        // If not currently in a channel, pauses instead of playing audio.
+        if (audioManager == null || !audioManager.isConnected()) {
+            Logging.log(logContext, "Not connected to a channel, cannot play audio");
+            pause();
+            return;
+        }
+
+        // Get the first song off the top of the database.
+        // The the queue is empty, stops trying to play.
         ArrayList<Song> queue = db.getSongs();
         if (queue.size() == 0) {
             Logging.log(logContext, "Reached end of queue");

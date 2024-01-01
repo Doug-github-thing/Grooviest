@@ -162,24 +162,37 @@ public class Database {
      */
     public void addSong(String url) {
 
-        // Query the Youtube API to get the song name
-        String name = YoutubeAPI.getVideoName(url);
-
         // Figure out what position value to assign to this song by getting a list of
-        // all songs, and counting how many there are.
-        int position = getSongs().size();
-        DatabaseReference newSongRef = db.getReference("songs/" + position);
+        // all songs, and finding the first value which not already in use.
+        ArrayList<Song> allSongs = getSongs();
+        ArrayList<Integer> positions = new ArrayList<Integer>();
 
-        // Create the new song object to add.
-        Song newSong = new Song(position, name, url);
+        // Get list of all in use positions
+        for (Song song : allSongs) {
+            positions.add(song.getPosition());
+        }
 
+        // Find a not yet in use position to add use.
+        // By the time this loop breaks, "pos" is a value not in use
+        int pos = 0;
+        for (; pos < positions.size(); pos++) {
+            if (pos != positions.get(pos).intValue())
+                break;
+        }
+
+        // Query the Youtube API to get the song name
+        Song newSong = YoutubeAPI.getSongData(url);
+        newSong.setPosition(pos);
+
+        // Add the newly generated song object to the database
+        DatabaseReference newSongRef = db.getReference("songs/" + pos);
         newSongRef.setValue(newSong, (databaseError, databaseReference) -> {
             if (databaseError == null) {
                 Logging.log(logContext, databaseReference.getKey() + " updated to " + newSong);
                 return;
             }
             Logging.log(logContext,
-                    "Error updating songs/" + position + " to: " + newSong + ".\n" + databaseError.getMessage());
+                    "Error updating song to " + newSong + ".\n" + databaseError.getMessage());
         });
     }
 
@@ -231,12 +244,13 @@ public class Database {
                         // song data is stored in a JSON Object
                         HashMap<String, Object> thisMap = (HashMap) item;
                         String name = (String) thisMap.get("name");
+                        String channel = (String) thisMap.get("channel");
                         String url = (String) thisMap.get("url");
 
                         String stringPosition = thisMap.get("position").toString();
                         int position = Integer.parseInt(stringPosition);
 
-                        Song thisSong = new Song(position, name, url);
+                        Song thisSong = new Song(position, name, channel, url);
                         mySongs.add(thisSong);
                     }
                 }
@@ -257,12 +271,13 @@ public class Database {
                         // song data is stored in a JSON Object
                         HashMap<String, Object> thisMap = (HashMap) item;
                         String name = (String) thisMap.get("name");
+                        String channel = (String) thisMap.get("channel");
                         String url = (String) thisMap.get("url");
 
                         String stringPosition = thisMap.get("position").toString();
                         int position = Integer.parseInt(stringPosition);
 
-                        Song thisSong = new Song(position, name, url);
+                        Song thisSong = new Song(position, name, channel, url);
                         mySongs.add(thisSong);
                     }
                 }

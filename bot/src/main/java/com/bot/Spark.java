@@ -37,26 +37,10 @@ public class Spark {
             return "Attempting to perform command: " + param;
         });
 
-        // Plays audio with a given filename
-        post("/api/url/:name", (req, res) -> {
-            String name = req.params(":name");
-            boolean success = bot.playURL(name);
-
-            res.status(200);
-            if (success)
-                res.body("Successful");
-            else
-                res.body("Unsuccessful");
-
-            return "Attempting to play file: " + name;
-        });
-
         // Adds audio with the given youtube ID to the queue
         post("/api/add/:url", (req, res) -> {
             String url = req.params(":url");
             bot.addSong(url);
-
-            res.status(200);
             return "Attempting to add the following youtube video to the queue: " + url;
         });
 
