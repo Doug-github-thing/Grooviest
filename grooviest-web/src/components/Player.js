@@ -2,8 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getDatabase, ref, onValue } from "firebase/database";
 
-// For displaying buttons
-import CommandButton from "./CommandButton";
+// For displaying the song card
 import NowPlayingCard from "./NowPlayingCard";
 
 const Player = () => {
