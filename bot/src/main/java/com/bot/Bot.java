@@ -226,6 +226,7 @@ public class Bot extends ListenerAdapter {
      */
     private void skip() {
         playNext();
+        play();
     }
 
     /**
