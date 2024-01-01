@@ -113,7 +113,12 @@ public class Song {
      * Structures a Song as a string to print to stdout.
      */
     public String toString() {
-        return "{Position "
-                + this.position + ", " + this.name + ": " + this.url + "}";
+        return "[<"
+                + this.position + ": "
+                + this.name + ", "
+                + this.channel + ". "
+                + this.url + ", "
+                + this.thumbnail
+                + ">]";
     }
 }
