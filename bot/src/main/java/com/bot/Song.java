@@ -101,6 +101,15 @@ public class Song {
     }
 
     /**
+     * Sets the value for Position to the inidicated position.
+     * 
+     * @param newPosition The new position to set.
+     */
+    public void setPosition(int newPosition) {
+        this.position = newPosition;
+    }
+
+    /**
      * Structures a Song as a string to print to stdout.
      */
     public String toString() {
