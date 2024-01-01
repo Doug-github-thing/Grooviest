@@ -46,6 +46,12 @@ public class Database {
     private DatabaseReference songsRef;
 
     /**
+     * Holds a database reference to the "now_palying" song.
+     * Gets initilized in the constructor before being called.
+     */
+    private DatabaseReference nowPlayingRef;
+
+    /**
      * Creates a Database object, which encapsulates Firebase Realtime Database
      * connection, and defines helper methods to facilitate CRUD commands.
      */
@@ -73,6 +79,7 @@ public class Database {
         db = FirebaseDatabase.getInstance();
         locationRef = db.getReference("location");
         songsRef = db.getReference("songs");
+        nowPlayingRef = db.getReference("now_playing");
     }
 
     /**
@@ -120,18 +127,47 @@ public class Database {
     }
 
     /**
-     * Change the value of Location in the database to the specified String.
+     * Checks the firebase database for the current "now_playing"
      * 
-     * @param newValue New String value with which to replace the old value.
+     * @return Song object corresponding to the value in the "now_playing" key
      */
-    public void setLocationValue(String newValue) {
+    public Song getNowPlaying() {
+        CompletableFuture<Song> future = new CompletableFuture<>();
 
-        locationRef.setValue(newValue, (databaseError, databaseReference) -> {
+        DatabaseReference ref = db.getReference("now_playing");
+
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Song locationValue = dataSnapshot.getValue(Song.class);
+                future.complete(locationValue);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                future.completeExceptionally(
+                        new RuntimeException("Error reading location value: " + databaseError.getMessage()));
+            }
+        });
+
+        try {
+            return future.get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * Change the value of "now_playing" in the database to the specified Song.
+     */
+    public void setNowPlaying(Song newSong) {
+        nowPlayingRef.setValue(newSong, (databaseError, databaseReference) -> {
             if (databaseError == null) {
-                Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);
+                Logging.log(logContext, databaseReference.getKey() + " updated to " + newSong);
                 return;
             }
-            Logging.log(logContext, "Error updating location to: " + newValue + ".\n" + databaseError.getMessage());
+            Logging.log(logContext, "Error updating location to: " + newSong + ".\n" + databaseError.getMessage());
         });
     }
 
@@ -143,7 +179,6 @@ public class Database {
      * @param newValue Value of the new entry.
      */
     public void addEntry(String newKey, String newValue) {
-
         DatabaseReference ref = db.getReference(newKey);
         ref.setValue(newValue, (databaseError, databaseReference) -> {
             if (databaseError == null) {
@@ -152,6 +187,24 @@ public class Database {
             }
             Logging.log(logContext,
                     "Error updating " + newKey + " to: " + newValue + ".\n" + databaseError.getMessage());
+        });
+    }
+
+    /**
+     * Takes a song object, packages it up, and adds it to the "now_playing"
+     * key in the database. Used to communicate with the frontend with player data.
+     * 
+     * @param song The Song object to add.
+     */
+    public void addNowPlaying(Song song) {
+        DatabaseReference ref = db.getReference("now_playing");
+        ref.setValue(song, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                Logging.log(logContext, databaseReference.getKey() + " updated to " + song);
+                return;
+            }
+            Logging.log(logContext,
+                    "Error updating 'now_playing' to: " + song + ".\n" + databaseError.getMessage());
         });
     }
 

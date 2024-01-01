@@ -90,7 +90,7 @@ public class Bot extends ListenerAdapter {
         // Reset state variables in the database on startup
         db.addEntry("paused", "false");
         db.addEntry("location", "");
-        db.addEntry("now_playing", "");
+        db.setNowPlaying(null);
         db.addEntry("bot_online", "true");
 
         // Add a shutdown hook
@@ -101,7 +101,7 @@ public class Bot extends ListenerAdapter {
             // Reset state variables in the database on shutdown
             db.addEntry("paused", "false");
             db.addEntry("location", "");
-            db.addEntry("now_playing", "");
+            db.setNowPlaying(null);
             db.addEntry("bot_online", "false");
         }));
     }
@@ -141,7 +141,7 @@ public class Bot extends ListenerAdapter {
             botJDA.getPresence().setStatus(OnlineStatus.ONLINE);
             botJDA.getPresence().setActivity(Activity.customStatus(
                     "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
-            db.setLocationValue(myGuild.getName() + ": " + audioChannel.getName());
+            db.addEntry("location", myGuild.getName() + ": " + audioChannel.getName());
         }
 
         // "egg" route: Says egg.
@@ -216,8 +216,8 @@ public class Bot extends ListenerAdapter {
             return;
         }
 
-        String nowPlaying = db.getValue("now_playing");
-        if (nowPlaying == null || nowPlaying.length() == 0)
+        Song nowPlaying = db.getNowPlaying();
+        if (nowPlaying == null)
             playNext();
     }
 
@@ -273,8 +273,8 @@ public class Bot extends ListenerAdapter {
         db.addSong(url);
 
         // If not already playing something, then start now.
-        String nowPlaying = db.getValue("now_playing");
-        if (nowPlaying == null || nowPlaying.length() == 0)
+        Song nowPlaying = db.getNowPlaying();
+        if (nowPlaying == null)
             playNext();
     }
 
@@ -296,7 +296,7 @@ public class Bot extends ListenerAdapter {
         if (queue.size() == 0) {
             Logging.log(logContext, "Reached end of queue");
             player.stopTrack();
-            db.addEntry("now_playing", "");
+            db.setNowPlaying(null);
             db.addEntry("paused", "false");
             return;
         }
@@ -308,7 +308,7 @@ public class Bot extends ListenerAdapter {
         db.removeSong(thisSong.getPosition());
 
         // Update Now Playing to track the current song
-        db.addEntry("now_playing", thisSong.getName());
+        db.setNowPlaying(thisSong);
         // Play that song
         playURL(thisSong.getURL());
     }
