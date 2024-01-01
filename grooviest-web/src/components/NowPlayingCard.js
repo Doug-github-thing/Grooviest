@@ -28,7 +28,7 @@ const NowPlayingCard = ({song, paused}) => {
 
             <div className="playback-buttons">
 
-                {paused == "false" ? 
+                {paused === "false" ? 
                     <CommandButton text="| |" command="pause" /> 
                         :
                     <CommandButton text="&#9658;" command="play" />
