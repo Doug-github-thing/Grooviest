@@ -20,7 +20,6 @@ const Queue = ({ className }) => {
         return onValue(query, (snapshot) => {
             const data = snapshot.val();
             snapshot.exists() ? setSongs(Object.values(data)) : setSongs();
-            console.log(songs);
         });
     }, []);
 
