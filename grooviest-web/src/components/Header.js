@@ -11,10 +11,6 @@ const Header = ({ title }) => {
     const [onlineStatus, setOnlineStatus] = useState();
     // For displaying which voice channel the bot is attached to
     const [channel, setChannel] = useState();
-    // For displaying the Now Playing message
-    const [playing, setPlaying] = useState();
-    // For tracking paused status
-    const [paused, setPaused] = useState("");
 
     
     useEffect(() => {
@@ -29,17 +25,6 @@ const Header = ({ title }) => {
         return onValue( query, (snapshot) => setChannel(snapshot.val()) );
       }, []);
 
-    useEffect(() => {
-        const myDatabase = getDatabase();
-        const query = ref(myDatabase, "now_playing");
-        return onValue( query, (snapshot) => setPlaying(snapshot.val()) );
-    }, []);
-
-    useEffect(() => {
-        const myDatabase = getDatabase();
-        const query = ref(myDatabase, "paused");
-        return onValue( query, (snapshot) => setPaused(snapshot.val()) );
-    }, []);
 
     return (
         <header className="app-header">
@@ -57,27 +42,12 @@ const Header = ({ title }) => {
                             <>Please use -join while connected to a voice channel</>
                         )}
                     </div>
-                    <div className="now-playing">
-                        { // Check if the player is playing anything
-                        (playing === "" || playing === null) ? 
-                        <>Not currently playing</>
-                        :
-                            // Check if it's paused
-                            (paused !=="true") ?
-                            <>Now playing: {playing}</> 
-                            :
-                            <>PAUSED: {playing}</>
-                        }
-                    </div>
                 </>}
             </h4>
             
             <div className="control-buttons">
                 <CommandButton text="Join" command="join" />
                 <CommandButton text="Leave" command="leave" />
-                <CommandButton text="&#9658;" command="play" />
-                <CommandButton className="fa fa-pause" text="| |" command="pause" />
-                <CommandButton text="skip" command="skip" />
             </div>
         </header>
     );
