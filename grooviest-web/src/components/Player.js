@@ -5,7 +5,7 @@ import { getDatabase, ref, onValue } from "firebase/database";
 // For displaying the song card
 import NowPlayingCard from "./NowPlayingCard";
 
-import PlayerUtils from "../utils/PlayerUtils"
+import MyProgressBar from "./ProgressBar"
 
 const Player = () => {
 
@@ -13,9 +13,6 @@ const Player = () => {
     const [playing, setPlaying] = useState();
     // For tracking paused status
     const [paused, setPaused] = useState("");
-    // For track seeking
-    const [duration, setDuration] = useState("");
-    const [elapsed, setElapsed] = useState("");
 
 
     // Updates "player" with the value of the current song in the database 
@@ -30,20 +27,6 @@ const Player = () => {
         const myDatabase = getDatabase();
         const query = ref(myDatabase, "paused");
         return onValue( query, (snapshot) => setPaused(snapshot.val()) );
-    }, []);
-
-    // For track seeking
-    useEffect(() => {
-        const myDatabase = getDatabase();
-        const query = ref(myDatabase, "now_playing/duration");
-        return onValue( query, (snapshot) => setDuration(snapshot.val()) );
-    }, []);
-
-    // For track seeking
-    useEffect(() => {
-        const myDatabase = getDatabase();
-        const query = ref(myDatabase, "now_playing/elapsed");
-        return onValue( query, (snapshot) => setElapsed(snapshot.val()) );
     }, []);
 
 
@@ -62,7 +45,7 @@ const Player = () => {
                     <NowPlayingCard song={playing} paused={paused} /> : <></>
                 }
             </div>
-            <div>{PlayerUtils.formatTime(elapsed)} / {PlayerUtils.formatTime(duration)}</div>
+            <MyProgressBar />
         </>
     );
 }
