@@ -155,9 +155,17 @@ public class Bot extends ListenerAdapter {
 
         if (thisCommand.length() > 3 &&
                 thisCommand.substring(0, 3).equals("-p ")) {
-            Logging.log("PARSED SEARCH TERMS", "got: " + thisCommand.substring(3));
 
-            addSong("Ku6nJjmEeaw");
+            String searchTerms = thisCommand.substring(3);
+            String thisVideoID = YoutubeAPI.getIDfromSearchTerms(searchTerms);
+
+            if (thisVideoID == null) {
+                event.getChannel().sendMessage("No results for: \"" + searchTerms + "\"").queue();
+                return;
+            }
+
+            Logging.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa", "I got this result: " + thisVideoID);
+            addSong(thisVideoID);
             return;
         }
 
@@ -179,6 +187,10 @@ public class Bot extends ListenerAdapter {
             case "-p":
             case "-continue":
                 play();
+                break;
+            case "leave":
+            case "disconnect":
+                leave();
                 break;
             case "-egg":
                 event.getChannel().sendMessage("emngmgg").queue();
