@@ -7,7 +7,9 @@ import "./Card.css";
  *      "url": youtubeID,
  *      "name": name,
  *      "channel": channel name,
- *      "thumbnail": link to thumbnail
+ *      "thumbnail": link to thumbnail,
+ *      "duration": total song duration in ms,
+ *      "elapsed": elapsed time in ms 
  * } 
  * @param {YoutubeSearchResultItem} song The song object formatted as specified above
  * @param {integer} index Which number in the list this item corresponds to. Used for alternating colors.
