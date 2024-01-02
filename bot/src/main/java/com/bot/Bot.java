@@ -106,6 +106,40 @@ public class Bot extends ListenerAdapter {
         }));
     }
 
+    /**
+     * Called when "-join" is sent in a Discord channel.
+     * Essential to happen once on initial deployment of the bot so it knows which
+     * channel to play in.
+     * 
+     * @param event The message event corresponding to the join command.
+     */
+    private void initialJoin(MessageReceivedEvent event) {
+
+        // Check if user is connected to a voice channel
+        if (event.getMember().getVoiceState().getChannel() == null) {
+            event.getChannel().sendMessage("Please join a voice channel in this server").queue();
+            return;
+        }
+
+        myGuild = event.getGuild();
+
+        // Let 'em know
+        String msg = "Now listening in: " + event.getGuild() + "!";
+        event.getChannel().sendMessage(msg).queue();
+
+        // Connect to the voice channel
+        audioManager = myGuild.getAudioManager();
+        audioChannel = event.getMember().getVoiceState().getChannel();
+        audioManager.setSendingHandler(new AudioPlayerSendHandler(player));
+        audioManager.openAudioConnection(audioChannel);
+
+        // Change activity and status, update database to reflect new channel connection
+        botJDA.getPresence().setStatus(OnlineStatus.ONLINE);
+        botJDA.getPresence().setActivity(Activity.customStatus(
+                "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
+        db.addEntry("location", myGuild.getName() + ": " + audioChannel.getName());
+    }
+
     // Callback when a message is received
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -116,37 +150,41 @@ public class Bot extends ListenerAdapter {
                 || !event.getMessage().getContentRaw().startsWith("-"))
             return;
 
-        // "join" route: Identifies which audio channel the requestor is in, then joins.
-        if (event.getMessage().getContentRaw().equalsIgnoreCase("-join")) {
+        // Route discord commands passed in discord chat:
+        String thisCommand = event.getMessage().getContentRaw();
 
-            // Check if user is connected to a voice channel
-            if (event.getMember().getVoiceState().getChannel() == null) {
-                event.getChannel().sendMessage("Please join a voice channel in this server").queue();
-                return;
-            }
+        if (thisCommand.length() > 3 &&
+                thisCommand.substring(0, 3).equals("-p ")) {
+            Logging.log("PARSED SEARCH TERMS", "got: " + thisCommand.substring(3));
 
-            myGuild = event.getGuild();
-
-            // Let 'em know
-            String msg = "Now listening in: " + event.getGuild() + "!";
-            event.getChannel().sendMessage(msg).queue();
-
-            // Connect to the voice channel
-            audioManager = myGuild.getAudioManager();
-            audioChannel = event.getMember().getVoiceState().getChannel();
-            audioManager.setSendingHandler(new AudioPlayerSendHandler(player));
-            audioManager.openAudioConnection(audioChannel);
-
-            // Change activity and status, update database to reflect new channel connection
-            botJDA.getPresence().setStatus(OnlineStatus.ONLINE);
-            botJDA.getPresence().setActivity(Activity.customStatus(
-                    "Currently attached to " + myGuild.getName() + ": " + audioChannel.getName()));
-            db.addEntry("location", myGuild.getName() + ": " + audioChannel.getName());
+            addSong("Ku6nJjmEeaw");
+            return;
         }
 
-        // "egg" route: Says egg.
-        if (event.getMessage().getContentRaw().equalsIgnoreCase("-egg")) {
-            event.getChannel().sendMessage("emngmgg").queue();
+        switch (thisCommand) {
+            case "-join":
+                initialJoin(event);
+                break;
+            case "-skip":
+            case "-next":
+            case "-s":
+            case "-n":
+                playNext();
+                break;
+            case "-pause":
+                pause();
+                break;
+            case "-resume":
+            case "-play":
+            case "-p":
+            case "-continue":
+                play();
+                break;
+            case "-egg":
+                event.getChannel().sendMessage("emngmgg").queue();
+                break;
+            default:
+                break;
         }
     }
 
