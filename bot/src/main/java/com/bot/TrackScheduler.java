@@ -1,7 +1,6 @@
 package com.bot;
 
 import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
-import com.google.firebase.database.FirebaseDatabase;
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
@@ -35,9 +34,9 @@ public class TrackScheduler extends AudioEventAdapter {
     private Timer timer = new Timer(true);
 
     /**
-     * Whether or not the timer is paused.
+     * Track currently playing.
      */
-    private boolean timerIsPaused = false;
+    private AudioTrack currentTrack = null;
 
     /**
      * 
@@ -56,7 +55,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // Player was paused
         Logging.log(logContext, "Playback paused");
 
-        timerIsPaused = true;
+        timer.purge();
         // Update the database's paused variable to reflect this
         db.addEntry("paused", "true");
     }
@@ -66,7 +65,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // Player was resumed
         Logging.log(logContext, "Playback resumed");
 
-        timerIsPaused = false;
+        scheduleElapsedTimer();
         // Update the database's paused variable to reflect this
         db.addEntry("paused", "false");
     }
@@ -74,25 +73,18 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
+
+        currentTrack = track;
         Logging.log(logContext, "Started new track: " + track.getInfo());
         db.addEntry("now_playing/duration", "" + track.getDuration());
+        db.addEntry("now_playing/elapsed", "" + 0, false);
 
-        timerIsPaused = false;
-        // Start a timer to update the database every second
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                if (!timerIsPaused)
-                    // Add entry without logging!
-                    db.addEntry("now_playing/elapsed", "" + track.getPosition(), true);
-            }
-        }, 100, 100); // Start updating every second after 1 second
-
+        scheduleElapsedTimer();
     }
 
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
-        timer.cancel();
+        timer.purge();
         if (endReason.mayStartNext) {
             Logging.log(logContext, "Finished track: " + track.toString());
             bot.playNext();
@@ -114,8 +106,8 @@ public class TrackScheduler extends AudioEventAdapter {
         // An already playing track threw an exception (track end event will still be
         // received separately)
         Logging.log(logContext, "Reached an exception playing track: " + track.toString());
+        timer.purge();
         Logging.log(logContext, "Playing next...");
-        timer.cancel();
         bot.playNext();
     }
 
@@ -124,9 +116,23 @@ public class TrackScheduler extends AudioEventAdapter {
         // Audio track has been unable to provide us any audio, might want to just start
         // a new track
         Logging.log(logContext, "Player got stuck playing track: " + track.toString());
+        timer.purge();
         Logging.log(logContext, "Playing next...");
-        timer.cancel();
         bot.playNext();
     }
 
+    /**
+     * Schedules a new "elapsed time" timer for the track currently playing.
+     */
+    private void scheduleElapsedTimer() {
+        // Start a timer to update the database every second
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                // Add entry without logging!
+                db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), true);
+            }
+        }, 1000, 1000);
+
+    }
 }
