@@ -55,6 +55,14 @@ public class Spark {
             return "Attempting to remove the song at the following position: " + position;
         });
 
+        // Adds audio with the given youtube ID to the queue
+        post("/api/seek/:ms", (req, res) -> {
+            String stringMS = req.params("ms");
+            long ms = Long.parseLong(stringMS);
+            bot.seek(ms);
+            return "Attempting to seek in the current track at: " + stringMS + " ms.";
+        });
+
         // Stop Spark gracefully on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             stop();

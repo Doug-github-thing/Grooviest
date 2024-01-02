@@ -149,6 +149,15 @@ public class TrackScheduler extends AudioEventAdapter {
                     db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), true);
             }
         }, 1000, 1000);
+    }
 
+    /**
+     * Tells the player to seek the current song at the indicated ms value
+     * 
+     * @param ms The ms value into the song to seek to.
+     */
+    public void seek(long ms) {
+        currentTrack.setPosition(ms);
+        db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), false);
     }
 }

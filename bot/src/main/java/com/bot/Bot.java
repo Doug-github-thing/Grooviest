@@ -280,6 +280,15 @@ public class Bot extends ListenerAdapter {
     }
 
     /**
+     * Asks the track scheduler to seek the indicated position in the current song.
+     * 
+     * @param ms Position in the song to seek, in ms.
+     */
+    public void seek(long ms) {
+        trackScheduler.seek(ms);
+    }
+
+    /**
      * Bot attempts to play the audio file specified in the filename parameter.
      * 
      * @param url YoutubeID of the song to play.
