@@ -282,6 +282,7 @@ public class Bot extends ListenerAdapter {
      * Plays the song at the top of the queue, then removes the song from the queue.
      */
     public void playNext() {
+        player.stopTrack();
 
         // If not currently in a channel, pauses instead of playing audio.
         if (audioManager == null || !audioManager.isConnected()) {

@@ -85,8 +85,11 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         timer.purge();
+        currentTrack = null;
+        Logging.log(logContext, "Finished track: " + track.toString());
+
         if (endReason.mayStartNext) {
-            Logging.log(logContext, "Finished track: " + track.toString());
+            Logging.log(logContext, "Calling Bot.playNext()");
             bot.playNext();
         }
 
@@ -130,7 +133,8 @@ public class TrackScheduler extends AudioEventAdapter {
             @Override
             public void run() {
                 // Add entry without logging!
-                db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), true);
+                if (currentTrack != null)
+                    db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), true);
             }
         }, 1000, 1000);
 
