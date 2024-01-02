@@ -53,6 +53,8 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
         Logging.log(logContext, "Started new track: " + track.getInfo());
+        db.addEntry("now_playing/duration", "" + track.getDuration());
+
     }
 
     @Override
@@ -78,6 +80,8 @@ public class TrackScheduler extends AudioEventAdapter {
         // An already playing track threw an exception (track end event will still be
         // received separately)
         Logging.log(logContext, "Reached an exception playing track: " + track.toString());
+        Logging.log(logContext, "Playing next...");
+        bot.playNext();
     }
 
     @Override
@@ -85,5 +89,8 @@ public class TrackScheduler extends AudioEventAdapter {
         // Audio track has been unable to provide us any audio, might want to just start
         // a new track
         Logging.log(logContext, "Player got stuck playing track: " + track.toString());
+        Logging.log(logContext, "Playing next...");
+        bot.playNext();
     }
+
 }
