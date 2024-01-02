@@ -1,8 +1,11 @@
 package com.bot;
 
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 
 public class YoutubeAPI {
@@ -66,10 +69,15 @@ public class YoutubeAPI {
      * @return The YoutubeID of the first result. Null if no results.
      */
     public static String getIDfromSearchTerms(String searchTerms) {
-        String request = youtubeAPIAddr + "search?part=snippet&type=video&q=" + searchTerms + "&key=" + API_KEY;
 
         // Make request
         try {
+            String encodedSearchTerms = urlEncode(searchTerms);
+
+            String request = youtubeAPIAddr
+                    + "search?part=snippet&type=video&q=" + encodedSearchTerms
+                    + "&key=" + API_KEY;
+
             URL url = new URL(request);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
@@ -158,13 +166,16 @@ public class YoutubeAPI {
 
     /**
      * Looks for the first instance of the key <"videoId":> in the json array.
-     * Gets the string in between the next set of ""
+     * Gets the string in between the next set of "". Null if not there.
      * 
      * @param json The String representation of the video json object
      * @return The title of the given video
      */
     private static String extractIDFromJSON(String json) {
         String title = "";
+
+        if (json.indexOf("videoId") == -1)
+            return null;
 
         try {
             // Trim off everything just after the word \"title\"
@@ -183,5 +194,15 @@ public class YoutubeAPI {
         }
 
         return title;
+    }
+
+    /**
+     * Encodes String search terms in a URL friendly format.
+     * 
+     * @param termsToEncode Terms to encode
+     * @return A String with url encoded terms.
+     */
+    private static String urlEncode(String termsToEncode) throws UnsupportedEncodingException {
+        return URLEncoder.encode(termsToEncode, StandardCharsets.UTF_8.toString());
     }
 }
