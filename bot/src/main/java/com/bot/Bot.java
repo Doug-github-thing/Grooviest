@@ -188,8 +188,8 @@ public class Bot extends ListenerAdapter {
             case "-continue":
                 play();
                 break;
-            case "leave":
-            case "disconnect":
+            case "-leave":
+            case "-disconnect":
                 leave();
                 break;
             case "-egg":
