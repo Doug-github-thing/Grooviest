@@ -191,6 +191,28 @@ public class Database {
     }
 
     /**
+     * Adds a new String Key/Value pair to the root of the database.
+     * Updates it if the value newKey was already in the database.
+     * 
+     * @param newKey           Key of the new entry.
+     * @param newValue         Value of the new entry.
+     * @param completeSilently Whether or not the method should execute without
+     *                         printing to STDOUT
+     */
+    public void addEntry(String newKey, String newValue, boolean completeSilently) {
+        DatabaseReference ref = db.getReference(newKey);
+        ref.setValue(newValue, (databaseError, databaseReference) -> {
+            if (databaseError == null) {
+                if (!completeSilently)
+                    Logging.log(logContext, databaseReference.getKey() + " updated to " + newValue);
+                return;
+            }
+            Logging.log(logContext,
+                    "Error updating " + newKey + " to: " + newValue + ".\n" + databaseError.getMessage());
+        });
+    }
+
+    /**
      * Takes a song object, packages it up, and adds it to the "now_playing"
      * key in the database. Used to communicate with the frontend with player data.
      * 
