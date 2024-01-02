@@ -34,6 +34,11 @@ public class TrackScheduler extends AudioEventAdapter {
     private Timer timer = new Timer(true);
 
     /**
+     * Tracks whether the timer should be currently updating the "time elapsed" var.
+     */
+    private boolean timerIsPaused = false;
+
+    /**
      * Track currently playing.
      */
     private AudioTrack currentTrack = null;
@@ -55,6 +60,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // Player was paused
         Logging.log(logContext, "Playback paused");
 
+        timerIsPaused = true;
         timer.purge();
         // Update the database's paused variable to reflect this
         db.addEntry("paused", "true");
@@ -65,6 +71,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // Player was resumed
         Logging.log(logContext, "Playback resumed");
 
+        timerIsPaused = false;
         scheduleElapsedTimer();
         // Update the database's paused variable to reflect this
         db.addEntry("paused", "false");
@@ -73,8 +80,9 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackStart(AudioPlayer player, AudioTrack track) {
         // A track started playing
-
+        timerIsPaused = false;
         currentTrack = track;
+
         Logging.log(logContext, "Started new track: " + track.getInfo());
         db.addEntry("now_playing/duration", "" + track.getDuration());
         db.addEntry("now_playing/elapsed", "" + 0, false);
@@ -85,6 +93,7 @@ public class TrackScheduler extends AudioEventAdapter {
     @Override
     public void onTrackEnd(AudioPlayer player, AudioTrack track, AudioTrackEndReason endReason) {
         timer.purge();
+        timerIsPaused = true;
         currentTrack = null;
         Logging.log(logContext, "Finished track: " + track.toString());
 
@@ -109,6 +118,7 @@ public class TrackScheduler extends AudioEventAdapter {
         // An already playing track threw an exception (track end event will still be
         // received separately)
         Logging.log(logContext, "Reached an exception playing track: " + track.toString());
+        timerIsPaused = true;
         timer.purge();
         Logging.log(logContext, "Playing next...");
         bot.playNext();
@@ -118,6 +128,7 @@ public class TrackScheduler extends AudioEventAdapter {
     public void onTrackStuck(AudioPlayer player, AudioTrack track, long thresholdMs) {
         // Audio track has been unable to provide us any audio, might want to just start
         // a new track
+        timerIsPaused = true;
         Logging.log(logContext, "Player got stuck playing track: " + track.toString());
         timer.purge();
         Logging.log(logContext, "Playing next...");
@@ -128,12 +139,13 @@ public class TrackScheduler extends AudioEventAdapter {
      * Schedules a new "elapsed time" timer for the track currently playing.
      */
     private void scheduleElapsedTimer() {
+        timerIsPaused = false;
         // Start a timer to update the database every second
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 // Add entry without logging!
-                if (currentTrack != null)
+                if (currentTrack != null && !timerIsPaused)
                     db.addEntry("now_playing/elapsed", "" + currentTrack.getPosition(), true);
             }
         }, 1000, 1000);
