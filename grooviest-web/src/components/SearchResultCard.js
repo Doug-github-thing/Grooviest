@@ -2,6 +2,8 @@ import API from "../api/API";
 
 import "./Card.css";
 
+import { IoMdAdd } from "react-icons/io";
+
 /**
  * Formats a Youtube search result, passed as an object with the form:
  * {
@@ -42,7 +44,7 @@ const SearchResultCard = ({result, removeSearchResultsCallback, index}) => {
                     <div className="channel">{result.channel}</div>
                 </div>
             </div>
-            <button onClick={() => { addSongCallback(result.id) }}>+</button>
+            <button onClick={() => { addSongCallback(result.id) }}><IoMdAdd/></button>
 
         </div>
     )

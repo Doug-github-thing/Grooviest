@@ -5,6 +5,9 @@ import { getDatabase, ref, onValue } from "firebase/database";
 // For displaying buttons
 import CommandButton from "./CommandButton";
 
+// Button icons
+import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
+
 const Header = ({ title }) => {
 
     // For tracking if the bot is online
@@ -46,9 +49,10 @@ const Header = ({ title }) => {
             </h4>
             
             <div className="control-buttons">
-                <CommandButton text="Join" command="join" />
-                <CommandButton text="Leave" command="leave" />
+                <CommandButton icon={<IoEnterOutline/>} command="join" />
+                <CommandButton text={<IoExitOutline/>} command="leave" />
             </div>
+            
         </header>
     );
 }

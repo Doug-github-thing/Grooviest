@@ -1,6 +1,8 @@
 import CommandButton from "./CommandButton";
 import "./Card.css";
 
+import { IoMdPause, IoMdPlay, IoMdSkipForward } from "react-icons/io";
+
 /**
  * Song, passed as an object with the form:
  * {
@@ -31,12 +33,12 @@ const NowPlayingCard = ({song, paused}) => {
             <div className="playback-buttons">
 
                 {paused === "false" ? 
-                    <CommandButton text="| |" command="pause" /> 
+                    <CommandButton icon={<IoMdPause />} text="| |" command="pause" />
                         :
-                    <CommandButton text="&#9658;" command="play" />
+                    <CommandButton icon={<IoMdPlay />} command="play" />
                 }
 
-                <CommandButton text="skip" command="skip" />
+                <CommandButton icon={<IoMdSkipForward />} command="skip" />
             </div>
         </div>
     )

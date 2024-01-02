@@ -1,6 +1,8 @@
 import CommandButton from "./CommandButton";
 import "./Card.css";
 
+import { IoMdRemove } from "react-icons/io";
+
 /**
  * Song, passed as an object with the form:
  * {
@@ -30,7 +32,7 @@ const QueueCard = ({song, index}) => {
                     <div className="channel">{song.channel}</div>
                 </div>
             </div>
-            <CommandButton className="button" text="-" command={`remove/${song.position}`}/>
+            <CommandButton className="button" icon={<IoMdRemove/>} command={`remove/${song.position}`}/>
 
         </div>
     )
