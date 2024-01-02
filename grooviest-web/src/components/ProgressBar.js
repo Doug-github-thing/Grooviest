@@ -4,8 +4,7 @@ import { ref, getDatabase, onValue } from "firebase/database";
 // For displaying ms timestamps as human readable
 import PlayerUtils from "../utils/PlayerUtils";
 // For displaying linear progress bar
-// import "bootstrap/dist/css/bootstrap.css";
-// import ProgressBar from "react-bootstrap/ProgressBar";
+import "./ProgressBar.css";
 
 /**
  * @returns A linear progress bar for visualizing how for you are into the current song 
@@ -42,24 +41,27 @@ const MyProgressBar = () => {
 
 
     return (
-        <div>
-            <div className="progress-bar-outside" style={{
-                width:`100%`,
-                height:"5px",
-                backgroundColor:"#424549",
-                margin:"5px"
-            }}>
-                {duration === 0 ? <></> :
-                    <div className="progress-bar-inside" style={{
-                        width:`${100 * (elapsed / duration)}%`,
-                        height:"5px",
-                        backgroundColor:"gray",
-                        position:"absolute"
-                    }} />
-                }
-            </div>
+        <div className="progress-bar">
 
-            <div>{PlayerUtils.formatTime(elapsed)} / {PlayerUtils.formatTime(duration)}</div>
+            {duration === 0 ? 
+                // If there's no song playing, just show an empty bar
+                <div className="progress-bar-outside" />
+                    :
+                // Else, show the whole thing
+                <>
+                    <div className="left">{PlayerUtils.formatTime(elapsed)}</div>
+
+                    <div className="progress-bar-outside">
+                        {duration === 0 ? <></> :
+                            <div className="progress-bar-inside" 
+                                style={{width:`${100 * (elapsed / duration)}%`}} />
+                        }
+                    </div>
+
+                    <div className="right">{PlayerUtils.formatTime(duration)}</div>   
+                </>
+            }
+
         </div>
     );
     
