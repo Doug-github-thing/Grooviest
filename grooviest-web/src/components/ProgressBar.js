@@ -7,9 +7,13 @@ import PlayerUtils from "../utils/PlayerUtils";
 import API from "../api/API";
 // For displaying linear progress bar
 import "./ProgressBar.css";
-import { hover } from "@testing-library/user-event/dist/hover";
 
 /**
+ * Tracks how long the current song is, and how long that track has been playing (from the database)
+ * 
+ * The progress bar itself is two nested divs. They track where the user's mouse is, and when
+ * clicked sends a "seek at this point in the song" command to the bot.
+ * 
  * @returns A linear progress bar for visualizing how for you are into the current song 
  */
 const MyProgressBar = () => {
@@ -77,14 +81,19 @@ const MyProgressBar = () => {
                     :
                 // Else, show the whole thing
                 <>
+                    {/* Current position in song on the left */}
                     <div className="left">{PlayerUtils.formatTime(elapsed)}</div>
 
+                    {/* Progress bar is two nested, colored divs. They get taller while being hovered */}
                     <div className="progress-bar-outside"
                         style={{height: isHovered ? "2.5vmin" : "0.5vmin"}}
                         onMouseMove={handleMouseOver} 
                         onMouseOut={() => {setIsHovered(false)}}
                         onClick={() => {API.sendCommand(`seek/${hoveredValue}`)}}
                     >
+
+                        {/* The bar that moves as the song progresses. A Div which starts from 0% width
+                        and fills up to 100% width as the elapsed time approaches the song duration. */}
                         {duration === 0 ? <></> :
                             <div className="progress-bar-inside" 
                                 style={{width:`${100 * (elapsed / duration)}%`,
@@ -93,8 +102,20 @@ const MyProgressBar = () => {
                                 onClick={() => {API.sendCommand(`seek/${hoveredValue}`)}}
                             />
                         }
+
+                        {/* Display the time only while mouse is hovering over the bar */}
+                        <div className="mouseover-text"
+                            style={{
+                                // Conditional CSS rules only triggered while hovered
+                                display: isHovered ? "block" : "none",
+                                left: `${100 * (hoveredValue / duration)}%`,
+                            }}>
+                                {PlayerUtils.formatTime(hoveredValue)}
+                        </div>
+
                     </div>
 
+                    {/* Total song duration on the right */}
                     <div className="right">{PlayerUtils.formatTime(duration)}</div>
                 </>
             }

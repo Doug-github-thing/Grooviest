@@ -7,9 +7,7 @@
 
 .progress-bar-inside {
     background-color: gray;
-    /* position: absolute; */
     height: 5px;
-
     box-sizing: border-box;
 }
 
@@ -26,4 +24,11 @@
 
 .progress-bar-outside, .progress-bar-inside {
     flex: 1;
+}
+
+.progress-bar .mouseover-text {
+    position: relative;
+    top: -5vmin;
+    background-color: #282b30;
+    width: 65px;
 }
