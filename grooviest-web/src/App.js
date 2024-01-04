@@ -17,14 +17,14 @@ const App = () => {
             </div>
 
             <div id="middle">
+                <div className="player"><Player /></div>
+            </div>
+
+            <div id="bottom">
                 <div className="columns" style={{outline:"ActiveBorder"}}>
                     <div className="column"><SearchBar label="" /></div>
                     <div className="column"><Queue /></div>
                 </div>
-            </div>
-
-            <div id="bottom">
-                <div className="player"><Player /></div>
             </div>
 
         </div>
