@@ -1,5 +1,6 @@
 import "./App.css";
 import "./api/Database.js";
+import "./Scrollbar.css";
 
 import Header from "./components/Header";
 import Queue from "./components/Queue";
