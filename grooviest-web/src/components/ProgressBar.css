@@ -1,14 +1,12 @@
 .progress-bar-outside {
     height: 1vmin;
     background-color: #424549;
-    margin: 10px;
-    box-sizing: border-box;
+    margin-left: 0.7vw;
+    margin-right: 0.7vw;
 }
 
 .progress-bar-inside {
     background-color: gray;
-    height: 5px;
-    box-sizing: border-box;
 }
 
 .progress-bar {

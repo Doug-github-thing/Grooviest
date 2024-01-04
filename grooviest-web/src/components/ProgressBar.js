@@ -86,7 +86,7 @@ const MyProgressBar = () => {
 
                     {/* Progress bar is two nested, colored divs. They get taller while being hovered */}
                     <div className="progress-bar-outside"
-                        style={{height: isHovered ? "2.5vmin" : "0.5vmin"}}
+                        style={{height: isHovered ? "2.5vmin" : "0.7vmin"}}
                         onMouseMove={handleMouseOver} 
                         onMouseOut={() => {setIsHovered(false)}}
                         onClick={() => {API.sendCommand(`seek/${hoveredValue}`)}}
@@ -97,7 +97,7 @@ const MyProgressBar = () => {
                         {duration === 0 ? <></> :
                             <div className="progress-bar-inside" 
                                 style={{width:`${100 * (elapsed / duration)}%`,
-                                    height: isHovered ? "2.5vmin" : "0.5vmin"}}
+                                    height: isHovered ? "2.5vmin" : "0.7vmin"}}
                                 onMouseOut={() => {setIsHovered(false)}}
                                 onClick={() => {API.sendCommand(`seek/${hoveredValue}`)}}
                             />
