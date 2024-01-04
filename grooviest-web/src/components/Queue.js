@@ -25,16 +25,21 @@ const Queue = ({ className }) => {
 
 
     return (
-        <div className={className}>
+        <div id="queue-wrapper" className={className}>
+            
             <h2>Queue</h2>
-            <div>
-                {songs == null ? <>The queue is empty</> :
-                    songs.map((song, index) => (
-                        <QueueCard key={index} song={song} index={index} />
-                    ))}
+            <div className="songs">
+                {songs == null ? (
+                <>The queue is empty</>
+                ) : (
+                songs.map((song, index) => (
+                    <QueueCard key={index} song={song} index={index} />
+                ))
+                )}
+            
             </div>
         </div>
-    );
-}
+      );
+};
 
 export default Queue;

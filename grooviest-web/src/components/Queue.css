@@ -1,13 +1,4 @@
-.song-wrapper {
-    width: 100%;
-    overflow: hidden;
-}
-
-.id {
-    float: left;
-    text-align: left;
-}
-
-.button {
-    float: right;
+#queue-wrapper {
+    overflow-y: auto;
+    max-height: inherit;
 }

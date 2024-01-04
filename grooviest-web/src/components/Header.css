@@ -1,0 +1,18 @@
+.app-header {
+    font-size: 1.5vmin;
+}
+
+#wrapper {
+    position: relative;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+#join-button {
+    float: left;
+}
+
+#leave-button {
+    float: right;
+}

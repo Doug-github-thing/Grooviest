@@ -8,6 +8,8 @@ import CommandButton from "./CommandButton";
 // Button icons
 import { IoEnterOutline, IoExitOutline } from "react-icons/io5";
 
+import "./Header.css";
+
 const Header = ({ title }) => {
 
     // For tracking if the bot is online
@@ -31,28 +33,35 @@ const Header = ({ title }) => {
 
     return (
         <header className="app-header">
+            
             <h1>{title}</h1>
 
-            <h4 className="online-status">
-                {onlineStatus !== "true" ?
-                <>The bot is offline</>
-                :
-                <>
-                    <div className="connection-status">
-                        {(channel ? 
-                            <>Currently attached to: {channel}</>
-                            :
-                            <>Please use -join while connected to a voice channel</>
-                        )}
-                    </div>
-                </>}
-            </h4>
-            
-            <div className="control-buttons">
-                <CommandButton icon={<IoEnterOutline/>} command="join" />
-                <CommandButton text={<IoExitOutline/>} command="leave" />
+            <div id="wrapper">
+                <div id="join-button">
+                    <CommandButton icon={<IoEnterOutline/>} command="join" />
+                </div>
+
+                <h4 id="online-status">
+                    {onlineStatus !== "true" ?
+                    <>The bot is offline</>
+                    :
+                    <>
+                        <div id="connection-status">
+                            {(channel ? 
+                                <>Currently attached to: {channel}</>
+                                :
+                                <>Please use -join while connected to a voice channel</>
+                            )}
+                        </div>
+                    </>}
+                </h4>
+                
+                <div id="leave-button">
+                    <CommandButton text={<IoExitOutline/>} command="leave" />
+                </div>
+
             </div>
-            
+
         </header>
     );
 }
