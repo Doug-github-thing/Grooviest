@@ -1,5 +1,7 @@
 package com.bot;
 
+import static spark.Spark.delete;
+
 import java.io.FileInputStream;
 
 import com.google.auth.oauth2.GoogleCredentials;
@@ -34,24 +36,6 @@ public class Database {
     private FirebaseDatabase db;
 
     /**
-     * Holds a database reference to the Location parameter.
-     * Gets initilized in the constructor before being called.
-     */
-    private DatabaseReference locationRef;
-
-    /**
-     * Holds a database reference to the Songs list.
-     * Gets initilized in the constructor before being called.
-     */
-    private DatabaseReference songsRef;
-
-    /**
-     * Holds a database reference to the "now_palying" song.
-     * Gets initilized in the constructor before being called.
-     */
-    private DatabaseReference nowPlayingRef;
-
-    /**
      * Creates a Database object, which encapsulates Firebase Realtime Database
      * connection, and defines helper methods to facilitate CRUD commands.
      */
@@ -77,9 +61,6 @@ public class Database {
 
         // At this point, the app should be initilized
         db = FirebaseDatabase.getInstance();
-        locationRef = db.getReference("location");
-        songsRef = db.getReference("songs");
-        nowPlayingRef = db.getReference("now_playing");
     }
 
     /**
@@ -162,6 +143,7 @@ public class Database {
      * Change the value of "now_playing" in the database to the specified Song.
      */
     public void setNowPlaying(Song newSong) {
+        DatabaseReference nowPlayingRef = db.getReference("now_playing");
         nowPlayingRef.setValue(newSong, (databaseError, databaseReference) -> {
             if (databaseError == null) {
                 Logging.log(logContext, databaseReference.getKey() + " updated to " + newSong);
@@ -273,13 +255,44 @@ public class Database {
 
     /**
      * Attempts to remove the song at a given position.
+     * Adjusts position of every song that comes after it.
      * 
      * @param position The position of the song to be removed.
      */
     public void removeSong(int position) {
-        Logging.log(logContext, "Deleting song at position " + position);
-        DatabaseReference deleteSongRef = db.getReference("songs/" + position);
-        deleteSongRef.removeValueAsync();
+
+        // Create a local representation of the queue as an ArrayList
+        ArrayList<Song> allSongs = getSongs();
+
+        // Remove specified song from local list, update each song with new positions
+        ArrayList<Song> updatedSongs = new ArrayList<Song>();
+
+        int i = 0;
+        for (Song thisSong : allSongs)
+            if (thisSong.getPosition() != position) {
+                thisSong.setPosition(i);
+                updatedSongs.add(thisSong);
+                i++;
+            }
+
+        // Delete all songs from the queue
+        DatabaseReference allSongsRef = db.getReference("songs");
+        allSongsRef.removeValueAsync();
+
+        // Re-populate the database queue with the updated local list
+        i = 0;
+        for (Song thisSong : updatedSongs) {
+            DatabaseReference thisSongRef = db.getReference("songs/" + i);
+            thisSongRef.setValue(thisSong, (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    Logging.log(logContext, databaseReference.getKey() + " updated to " + thisSong);
+                    return;
+                }
+                Logging.log(logContext,
+                        "Error updating song to " + thisSong + ".\n" + databaseError.getMessage());
+            });
+            i++;
+        }
     }
 
     /**
@@ -290,6 +303,7 @@ public class Database {
     public ArrayList<Song> getSongs() {
         CompletableFuture<ArrayList<Song>> futureSongs = new CompletableFuture<>();
 
+        DatabaseReference songsRef = db.getReference("songs");
         songsRef.orderByChild("position").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
