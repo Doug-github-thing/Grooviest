@@ -22,17 +22,29 @@ export default class API {
         });
     }
 
-    static youtubeSearch = async (terms) => {
-        return await this.getYoutubeVideoResults(terms);
+    /**
+     * Moves a song from one position in queue to a new one
+     * @param {Number} from Starting position
+     * @param {Number} to   Final position
+     */
+    static moveSong = (from, to) => {
+        const resource = `${this.bot_address}/api/move/${from}/${to}`;
+        console.log(`Sending ${resource}`);
+
+        fetch(resource, {
+            method: "POST"
+        }).then(res => {
+            console.log(`Response from bot: ${res.status}, ${res.statusText}`);
+        });
     }
 
     /**
      * Given youtube video search terms, returns the object returned from a call to the youtube search API
      * in the form: https://developers.google.com/youtube/v3/docs/search#resource
-     * @param {*} terms Search terms used to search for videos
+     * @param {String} terms Search terms used to search for videos
      * @returns Youtube search API result
      */
-    static getYoutubeVideoResults = async (terms) => {
+    static youtubeSearch = async (terms) => {
         const base = "https://www.googleapis.com/youtube/v3/search?part=snippet&type=video";
         const search = `&q=${encodeURIComponent(terms)}`;
         const key= `&key=${this.youtube_api_key}`;
