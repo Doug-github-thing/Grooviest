@@ -55,6 +55,21 @@ public class Spark {
             return "Attempting to remove the song at the following position: " + position;
         });
 
+        // Moves the element with the given position to the new position
+        post("/api/move/:initialPosition/:newPosition", (req, res) -> {
+            String stringInitialPosition = req.params(":initialPosition");
+            String stringNewPosition = req.params(":newPosition");
+
+            // Convert string parameters to the desired types
+            int initialPosition = Integer.parseInt(stringInitialPosition);
+            int newPosition = Integer.parseInt(stringNewPosition);
+
+            db.moveSong(initialPosition, newPosition);
+
+            res.status(200);
+            return "Attempting to move position " + initialPosition + " to position " + newPosition;
+        });
+
         // Adds audio with the given youtube ID to the queue
         post("/api/seek/:ms", (req, res) -> {
             String stringMS = req.params("ms");

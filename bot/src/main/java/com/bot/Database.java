@@ -17,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Defines and controls connection to the Firebase Realtime Database.
@@ -255,7 +256,7 @@ public class Database {
 
     /**
      * Attempts to remove the song at a given position.
-     * Adjusts position of every song that comes after it.
+     * Adjusts the positions of each song after removal.
      * 
      * @param position The position of the song to be removed.
      */
@@ -266,7 +267,6 @@ public class Database {
 
         // Remove specified song from local list, update each song with new positions
         ArrayList<Song> updatedSongs = new ArrayList<Song>();
-
         int i = 0;
         for (Song thisSong : allSongs)
             if (thisSong.getPosition() != position) {
@@ -282,6 +282,77 @@ public class Database {
         // Re-populate the database queue with the updated local list
         i = 0;
         for (Song thisSong : updatedSongs) {
+            DatabaseReference thisSongRef = db.getReference("songs/" + i);
+            thisSongRef.setValue(thisSong, (databaseError, databaseReference) -> {
+                if (databaseError == null) {
+                    Logging.log(logContext, databaseReference.getKey() + " updated to " + thisSong);
+                    return;
+                }
+                Logging.log(logContext,
+                        "Error updating song to " + thisSong + ".\n" + databaseError.getMessage());
+            });
+            i++;
+        }
+    }
+
+    /**
+     * Attempts to move the specified song to a new position in the queue.
+     * Adjusts the positions of each song after removal.
+     * 
+     * @param initialPos The position of the song to be moved.
+     * @param newPos     The position in queue where the new song is to be moved.
+     */
+    public void moveSong(int initialPos, int newPos) {
+
+        // Create a local representation of the queue as an ArrayList
+        ArrayList<Song> allSongs = getSongs();
+
+        // Adjusts if new position is above bounds
+        if (newPos >= allSongs.size())
+            newPos = allSongs.size() - 1;
+
+        // Does nothing if there's no change to be made
+        if (initialPos == newPos) {
+            Logging.log(logContext, "Nothing to move, new position is the same as original");
+            return;
+        }
+
+        // Check if params are within the range of the queue length, else do nothing
+        if (initialPos >= allSongs.size() || initialPos < 0
+                || newPos >= allSongs.size() || newPos < 0) {
+            Logging.log(logContext, "Invalid range when attempting to move song " + initialPos + " to " + newPos
+                    + " with queue length " + allSongs.size());
+            return;
+        }
+
+        Song movingSong = allSongs.get(initialPos);
+
+        // If it needs to move up, move up until the index of the moving song is
+        while (allSongs.indexOf(movingSong) != newPos) {
+
+            int index = allSongs.indexOf(movingSong);
+
+            if (initialPos > newPos)
+                // If the song needs to move up in the queue, swap it up until it gets there
+                Collections.swap(allSongs, index, index - 1);
+            else if (initialPos < newPos)
+                // Else, if song needs to move down in queue, swap it until it gets there
+                Collections.swap(allSongs, index, index + 1);
+        }
+        Logging.log(logContext, "Song " + movingSong.getName() + " moved up to position " + newPos);
+
+        // Delete all songs from the queue
+        DatabaseReference allSongsRef = db.getReference("songs");
+        allSongsRef.removeValueAsync();
+
+        // Re-populate the database queue with the updated local list
+        int i = 0;
+        for (Song thisSong : allSongs) {
+
+            // Also makes sure each song has the proper position assigned before adding
+            thisSong.setPosition(i);
+
+            // Adds the song to the database
             DatabaseReference thisSongRef = db.getReference("songs/" + i);
             thisSongRef.setValue(thisSong, (databaseError, databaseReference) -> {
                 if (databaseError == null) {
@@ -324,8 +395,6 @@ public class Database {
 
                     for (Object item : objectSongs) {
 
-                        // There can be gaps in the "position" numbers.
-                        // Ignore those when considering what songs are in the queue.
                         if (item == null)
                             continue;
 
@@ -351,8 +420,6 @@ public class Database {
 
                     for (Object item : objectSongs) {
 
-                        // There can be gaps in the "position" numbers.
-                        // Ignore those when considering what songs are in the queue.
                         if (item == null)
                             continue;
 
