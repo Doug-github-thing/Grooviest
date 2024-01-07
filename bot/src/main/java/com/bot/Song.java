@@ -110,6 +110,20 @@ public class Song {
     }
 
     /**
+     * Increases the position of this song by 1.
+     */
+    public void increasePosition() {
+        this.position++;
+    }
+
+    /**
+     * Decreases the position of this song by 1.
+     */
+    public void decreasePosition() {
+        this.position--;
+    }
+
+    /**
      * Structures a Song as a string to print to stdout.
      */
     public String toString() {
