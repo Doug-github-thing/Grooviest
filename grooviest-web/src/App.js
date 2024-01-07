@@ -13,7 +13,8 @@ const App = () => {
         <div className="app">
 
             <div id="top">
-                <Header title="Grooviest Web App" />
+                <h1>Whigg</h1>
+                {/* <Header title="Grooviest Web App" /> */}
             </div>
 
             <div id="middle">

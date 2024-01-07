@@ -4,8 +4,9 @@ import { getDatabase, ref, onValue } from "firebase/database";
 
 // For displaying the song card
 import NowPlayingCard from "./NowPlayingCard";
+import MyProgressBar from "./ProgressBar";
+import Header from "./Header";
 
-import MyProgressBar from "./ProgressBar"
 
 const Player = () => {
 
@@ -33,11 +34,15 @@ const Player = () => {
     return (
         <>
             {playing == null ?
-                <h2>Not currently playing</h2> :
+                <p>Not currently playing</p> :
                     paused === "true" ? 
-                        <h2>PAUSED</h2>
+                        <p style={{marginTop:"0.5vh"}}>PAUSED</p>
                             :
-                        <h2>Now Playing</h2>}
+                        <p style={{margin:"0.5vh"}}>Now Playing</p>}
+
+
+            <Header />
+            
         
             <div className="now-playing">
                 { // Check if the player is playing anything

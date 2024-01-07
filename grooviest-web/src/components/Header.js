@@ -37,28 +37,31 @@ const Header = ({ title }) => {
             <h1>{title}</h1>
 
             <div id="wrapper">
-                <div id="join-button">
+                {/* <div id="join-button">
                     <CommandButton icon={<IoEnterOutline/>} command="join" />
-                </div>
+                </div> */}
 
-                <h4 id="online-status">
+                <div id="online-status">
                     {onlineStatus !== "true" ?
                     <>The bot is offline</>
                     :
                     <>
                         <div id="connection-status">
                             {(channel ? 
-                                <>Currently attached to: {channel}</>
+                                <div style={{display:"flex"}}>
+                                    <div style={{fontStyle:"italic", marginRight:"0.5vw"}}>Currently attached to:</div>
+                                    {channel}
+                                </div>
                                 :
                                 <>Please use -join while connected to a voice channel</>
                             )}
                         </div>
                     </>}
-                </h4>
-                
-                <div id="leave-button">
-                    <CommandButton text={<IoExitOutline/>} command="leave" />
                 </div>
+                
+                {/* <div id="leave-button">
+                    <CommandButton text={<IoExitOutline/>} command="leave" />
+                </div> */}
 
             </div>
 
