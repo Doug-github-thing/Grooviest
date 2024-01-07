@@ -21,6 +21,9 @@ const SearchBar = ({ label, className }) => {
     const handleVideoSearch = async (event) => {
         event.preventDefault(); // Do not refresh the page
 
+        if (searchTerms.length === 0)
+            return;
+
         const rawSearchResults = await API.youtubeSearch(searchTerms);
         // console.log("Search resutls: ", rawSearchResults.items);
 
