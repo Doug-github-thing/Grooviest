@@ -32,7 +32,11 @@ const QueueCard = ({song, index}) => {
                     <div className="channel">{song.channel}</div>
                 </div>
             </div>
-            <CommandButton className="button" icon={<IoMdRemove/>} command={`remove/${song.position}`}/>
+            <div>
+                <CommandButton className="button" text="/\" command={`move/${song.position}/${song.position-1}`}/>
+                <CommandButton className="button" text="\/" command={`move/${song.position}/${song.position+1}`}/>
+                <CommandButton className="button" icon={<IoMdRemove/>} command={`remove/${song.position}`}/>
+            </div>
 
         </div>
     )
