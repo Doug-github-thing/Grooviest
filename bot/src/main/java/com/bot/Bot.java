@@ -300,7 +300,6 @@ public class Bot extends ListenerAdapter {
         playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
-                Logging.log("AAAAAAAAAAAAAAAAAAAA", "It's getting here, but doesn't start playing.");
                 player.playTrack(track);
             }
 
