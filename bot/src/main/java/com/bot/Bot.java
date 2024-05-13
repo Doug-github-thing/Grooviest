@@ -164,7 +164,7 @@ public class Bot extends ListenerAdapter {
                 return;
             }
 
-            Logging.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa", "I got this result: " + thisVideoID);
+            Logging.log(logContext, "I got this result: " + thisVideoID);
             addSong(thisVideoID);
             return;
         }
@@ -300,6 +300,7 @@ public class Bot extends ListenerAdapter {
         playerManager.loadItem(url, new AudioLoadResultHandler() {
             @Override
             public void trackLoaded(AudioTrack track) {
+                Logging.log("AAAAAAAAAAAAAAAAAAAA", "It's getting here, but doesn't start playing.");
                 player.playTrack(track);
             }
 
@@ -310,11 +311,16 @@ public class Bot extends ListenerAdapter {
             @Override
             public void noMatches() {
                 // Notify the user that we've got nothing
+                Logging.log(logContext + " - playerManager",
+                        "Found no matches for url " + url + ".");
+
             }
 
             @Override
             public void loadFailed(FriendlyException throwable) {
                 // Notify the user that everything exploded
+                Logging.log(logContext + " - playerManager",
+                        "Failed to load song from url " + url + ". \nError log: " + throwable.getMessage());
             }
         });
     }
@@ -362,7 +368,7 @@ public class Bot extends ListenerAdapter {
         }
         Song thisSong = queue.get(0);
 
-        Logging.log(logContext, "Attemping to play next song in the database: " + thisSong.getName());
+        Logging.log(logContext, "Attempting to play next song in the database: " + thisSong.getName());
 
         // Remove from the top of the queue
         db.removeSong(thisSong.getPosition());

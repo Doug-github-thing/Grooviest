@@ -8,16 +8,33 @@
   <name>myproject</name>
   <url>http://maven.apache.org</url>
 
+  <repositories>
   <!-- https://github.com/lavalink-devs/lavaplayer#readme
         LavaPlayer for playing audio -->
-  <repositories>
-    <repository>
+    <!-- <repository>
       <id>jitpack</id>
       <url>https://jitpack.io</url>
+    </repository> -->
+
+    <repository>
+    <!-- Part of github user submitted PR for fixing "Loading information for a YouTube track failed"
+        issue with lavaplayer accessing Youtube API 
+        https://jitpack.io/#idpromnut/lavaplayer/youtube_details_parse_bug-SNAPSHOT -->
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
     </repository>
   </repositories>
 
   <dependencies>
+
+    <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+        Logging dependency -->
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-simple</artifactId>
+        <version>2.0.13</version>
+        <scope>test</scope>
+    </dependency>
 
     <!-- Java Discord API
           https://mvnrepository.com/artifact/net.dv8tion/JDA -->
@@ -29,10 +46,18 @@
 
     <!-- LavaPlayer for playing audio
       https://github.com/lavalink-devs/lavaplayer#readme -->
-    <dependency>
+    <!-- <dependency>
       <groupId>dev.arbjerg</groupId>
       <artifactId>lavaplayer</artifactId>
-      <version>2.0.4</version>
+      <version>2.1.2</version>
+    </dependency> -->
+
+    <!-- https://github.com/lavalink-devs/lavaplayer/pull/85
+        Corrects bug where "Video returned by YouTube isn't what was requested" when playing youtube url -->
+    <dependency>
+      <groupId>com.github.kamilake</groupId>
+      <artifactId>lavaplayer</artifactId>
+      <version>main-SNAPSHOT</version>
     </dependency>
 
     <!-- Spark for Web Server HTTP routes -->
