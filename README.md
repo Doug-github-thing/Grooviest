@@ -56,7 +56,7 @@ Clone this git repo onto the pi. Install maven, pm2, nginx core.
     all:
         mvn clean install
         DISCORD_TOKEN=${DISCORD_TOKEN} YOUTUBE_API_KEY=${YOUTUBE_API_KEY}  mvn exec:java
-```
+    ```
 
 ### Daemon management
 
