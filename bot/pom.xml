@@ -2,11 +2,12 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.bot</groupId>
-  <artifactId>myproject</artifactId>
+  <artifactId>grooviest</artifactId>
   <packaging>jar</packaging>
   <version>1.0-SNAPSHOT</version>
-  <name>myproject</name>
+  <name>grooviest</name>
   <url>http://maven.apache.org</url>
+  <properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
 
   <repositories>
   <!-- https://github.com/lavalink-devs/lavaplayer#readme
@@ -16,13 +17,22 @@
       <url>https://jitpack.io</url>
     </repository> -->
 
-    <repository>
     <!-- Part of github user submitted PR for fixing "Loading information for a YouTube track failed"
         issue with lavaplayer accessing Youtube API 
         https://jitpack.io/#idpromnut/lavaplayer/youtube_details_parse_bug-SNAPSHOT -->
+    <!-- <repository>
         <id>jitpack.io</id>
         <url>https://jitpack.io</url>
+    </repository> -->
+
+    <repository>
+      <!-- Supports youtube-source plugin for Lavalink-Devs fork of lavaplayer.
+           Provides youtube search functionality to Lavalink-Devs' LavaPlayer -->
+      <id>arbjergDev-releases</id>
+      <name>Lavalink Repository</name>
+      <url>https://maven.lavalink.dev/releases</url>
     </repository>
+
   </repositories>
 
   <dependencies>
@@ -46,19 +56,24 @@
 
     <!-- LavaPlayer for playing audio
       https://github.com/lavalink-devs/lavaplayer#readme -->
-    <!-- <dependency>
+    <dependency>
       <groupId>dev.arbjerg</groupId>
       <artifactId>lavaplayer</artifactId>
-      <version>2.1.2</version>
-    </dependency> -->
+      <version>2.2.4</version>
+    </dependency>
+    <dependency>
+        <groupId>dev.lavalink.youtube</groupId>
+        <artifactId>v2</artifactId>
+        <version>1.9.0</version>
+    </dependency>
 
     <!-- https://github.com/lavalink-devs/lavaplayer/pull/85
         Corrects bug where "Video returned by YouTube isn't what was requested" when playing youtube url -->
-    <dependency>
+    <!-- <dependency>
       <groupId>com.github.kamilake</groupId>
       <artifactId>lavaplayer</artifactId>
       <version>main-SNAPSHOT</version>
-    </dependency>
+    </dependency> -->
 
     <!-- Spark for Web Server HTTP routes -->
     <dependency>
