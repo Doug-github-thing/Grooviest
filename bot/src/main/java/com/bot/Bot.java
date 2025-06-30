@@ -320,6 +320,8 @@ public class Bot extends ListenerAdapter {
                 // Notify the user that everything exploded
                 Logging.log(logContext + " - playerManager",
                         "Failed to load song from url " + url + ". \nError log: " + throwable.getMessage());
+                db.setNowPlaying(null);
+                db.addEntry("paused", "false");
             }
         });
     }
