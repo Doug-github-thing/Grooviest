@@ -1,0 +1,104 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.bot</groupId>
+  <artifactId>grooviest</artifactId>
+  <packaging>jar</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>grooviest</name>
+  <url>http://maven.apache.org</url>
+  <properties><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
+
+  <repositories>
+      <repository>
+          <!-- Supports youtube-source plugin for Lavalink-Devs fork of lavaplayer.
+              Provides youtube search functionality to Lavalink-Devs' LavaPlayer -->
+          <id>ll-releases</id>
+          <name>Lavalink Releases</name>
+          <url>https://maven.lavalink.dev/releases</url>
+      </repository>
+  </repositories>
+
+  <dependencies>
+
+      <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
+            Logging dependency -->
+      <dependency>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-simple</artifactId>
+          <version>2.0.13</version>
+          <scope>test</scope>
+      </dependency>
+
+      <!-- Java Discord API
+            https://mvnrepository.com/artifact/net.dv8tion/JDA -->
+      <dependency>
+          <groupId>net.dv8tion</groupId>
+          <artifactId>JDA</artifactId>
+          <version>5.6.1</version>
+      </dependency>
+
+      <!-- Lavalink for playing audio, since LavaPlayer youtube is unsupported
+            https://github.com/lavalink-devs/lavalink-client/tree/main -->
+      <dependency>
+          <groupId>dev.arbjerg</groupId>
+          <artifactId>lavalink-client</artifactId>
+          <version>3.2.0</version>
+      </dependency>
+
+      <!-- Spark for Web Server HTTP routes -->
+      <dependency>
+          <groupId>com.sparkjava</groupId>
+          <artifactId>spark-core</artifactId>
+          <version>2.9.3</version>
+      </dependency>
+
+      <!-- For access to the firebase database
+            https://firebase.google.com/docs/admin/setup#java -->
+      <dependency>
+          <groupId>com.google.firebase</groupId>
+          <artifactId>firebase-admin</artifactId>
+          <version>9.2.0</version>
+      </dependency>
+
+        <!-- junit for unit testing -->
+      <dependency>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+          <version>3.8.1</version>
+          <scope>test</scope>
+      </dependency>
+
+  </dependencies>
+  <build>
+    <plugins>
+
+      <!-- Specify compiler version -->
+      <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.12.0</version>
+          <configuration>
+              <source>17</source>
+              <target>17</target>
+          </configuration>
+      </plugin>
+
+      <!-- For running mvn exec:java -->
+      <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>3.1.1</version>
+          <executions>
+              <execution>
+                <goals><goal>java</goal></goals>
+              </execution>
+          </executions>
+          <configuration>
+              <!-- Specify the main class to be executed -->
+              <mainClass>com.bot.JavaJDAExample</mainClass>
+          </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
