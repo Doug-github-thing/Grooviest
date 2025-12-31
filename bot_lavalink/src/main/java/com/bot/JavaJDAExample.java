@@ -62,7 +62,8 @@ public class JavaJDAExample extends ListenerAdapter {
             ),*/
 
             client.addNode(new NodeOptions.Builder().setName("LocalNode")
-                .setServerUri(URI.create("ws://localhost:2333/"))
+                .setServerUri(URI.create("ws://lavalink-server:2333/"))
+                // .setServerUri(URI.create("ws://localhost:2333/"))
                 .setPassword("youshallnotpass")
                 .setRegionFilter(RegionGroup.US)
                 .setHttpTimeout(5000L)

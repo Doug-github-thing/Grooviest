@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  lavalink-server:
+    build:
+      context: ./lavalink_server
+      dockerfile: Dockerfile
+    container_name: lavalink-server
+    ports:
+      - "2333:2333"
+    networks:
+      - grooviest-network
+
+  lavalink-bot:
+    build:
+      context: ./bot_lavalink
+      dockerfile: Dockerfile
+    container_name: lavalink-bot
+    env_file:
+      - bot_lavalink/.env
+    depends_on:
+      - lavalink-server
+    networks:
+      - grooviest-network
+
+networks:
+  grooviest-network:
+    driver: bridge
