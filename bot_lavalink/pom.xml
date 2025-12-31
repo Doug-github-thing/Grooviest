@@ -27,7 +27,6 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-simple</artifactId>
           <version>2.0.13</version>
-          <scope>test</scope>
       </dependency>
 
       <!-- Java Discord API
@@ -99,6 +98,42 @@
               <mainClass>com.bot.JavaJDAExample</mainClass>
           </configuration>
       </plugin>
+
+        <!-- For executing the jar directly, without exec:jar -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.5.0</version>
+            <executions>
+                <execution>
+                <phase>package</phase>
+                <goals>
+                    <goal>shade</goal>
+                </goals>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <!-- REMOVE SIGNATURE FILES -->
+                    <filters>
+                    <filter>
+                        <artifact>*:*</artifact>
+                        <excludes>
+                        <exclude>META-INF/*.SF</exclude>
+                        <exclude>META-INF/*.DSA</exclude>
+                        <exclude>META-INF/*.RSA</exclude>
+                        </excludes>
+                    </filter>
+                    </filters>
+                    <!-- SET MAIN CLASS -->
+                    <transformers>
+                    <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                        <mainClass>com.bot.JavaJDAExample</mainClass>
+                    </transformer>
+                    </transformers>
+                </configuration>
+                </execution>
+            </executions>
+        </plugin>
+        
     </plugins>
   </build>
 </project>
