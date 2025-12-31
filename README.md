@@ -3,6 +3,14 @@ A discord bot that plays music on demand, and a web interface to improve user ex
 
 ## Current status
 
+Due to issues with Youtube streaming API changes, the bot is no longer able to work using the default Youtube API. Project is the process of migrating to using a local server Lavalink server as a backend for servicing Youtube song/video stream requests.
+
+At the current state, the frontend UI is not supported. The bot works using Discord chat commands `/join, /leave, /play/, /pause, /stop`. This is done by running `bot_lavalink` as the client and `lavalink_server` as the server. The other directories are still under development and not currently functional.
+
+The Lavalink server and Lavalink bot client processes are each run using their own Docker containers. Each folder contains a `run.sh` script for building and running their container. *Note: the bot_lavalink requires a `.env` inside its directory which defines `DISCORD_TOKEN` and `YOUTUBE_API_KEY` environment variables. Bot will not start without those.*
+
+## Previous states
+
 Run the app with mvn exec:java.
 
 User has to join a voice channel, and enter `-join` in any text channel. The bot will join that voice channel.

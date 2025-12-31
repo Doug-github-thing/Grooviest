@@ -171,3 +171,4 @@ cython_debug/
 #.idea/
 
 lavalink_server/logs/
+*/.env
